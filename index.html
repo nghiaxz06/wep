@@ -11,42 +11,17 @@ html,body{height:100%}
 body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;display:flex;flex-direction:column;overflow:hidden}
 
 /* ================= LOGIN SCREEN ================= */
-#login-screen {
-  position: fixed; inset: 0; background: #07090c; z-index: 99999;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background-image: radial-gradient(circle at 50% 0%, rgba(92,227,154,.15), transparent 60%);
-  transition: opacity 0.3s ease;
-}
-#login-screen.hide { opacity: 0; pointer-events: none; }
-.login-box {
-  background: var(--panel); border: 1px solid var(--line);
-  padding: 30px; border-radius: 12px; width: 100%; max-width: 320px;
-  text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,.5);
-}
-.login-box h2 { color: var(--acc); font-size: 20px; margin-bottom: 8px; letter-spacing: 1px; }
-.login-box p { color: var(--dim); font-size: 12px; margin-bottom: 20px; }
-.login-box input {
-  width: 100%; background: var(--bg); border: 1px solid var(--line);
-  color: var(--txt); padding: 12px; border-radius: 8px; font: inherit;
-  text-align: center; font-size: 18px; letter-spacing: 5px; outline: none;
-  margin-bottom: 15px; transition: 0.2s;
-}
-.login-box input:focus { border-color: var(--acc); }
-.login-box button {
-  width: 100%; background: var(--acc); color: #08110c; border: none;
-  padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px;
-  cursor: pointer; transition: 0.2s;
-}
-.login-box button:hover { background: #4ade80; }
-#login-err {
-  color: var(--red); font-size: 12px; margin-bottom: 15px; display: none;
-  animation: shake 0.3s ease-in-out;
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
+#login-screen{position:fixed;inset:0;background:#07090c;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background-image:radial-gradient(circle at 50% 0%,rgba(92,227,154,.15),transparent 60%);transition:opacity .3s ease}
+#login-screen.hide{opacity:0;pointer-events:none}
+.login-box{background:var(--panel);border:1px solid var(--line);padding:30px;border-radius:12px;width:100%;max-width:320px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.login-box h2{color:var(--acc);font-size:20px;margin-bottom:8px;letter-spacing:1px}
+.login-box p{color:var(--dim);font-size:12px;margin-bottom:20px}
+.login-box input{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--txt);padding:12px;border-radius:8px;font:inherit;text-align:center;font-size:18px;letter-spacing:5px;outline:none;margin-bottom:15px;transition:.2s}
+.login-box input:focus{border-color:var(--acc)}
+.login-box button{width:100%;background:var(--acc);color:#08110c;border:none;padding:12px;border-radius:8px;font-weight:bold;font-size:14px;cursor:pointer;transition:.2s}
+.login-box button:hover{background:#4ade80}
+#login-err{color:var(--red);font-size:12px;margin-bottom:15px;display:none;animation:shake .3s ease-in-out}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 /* ================================================= */
 
 /* TOP BAR */
@@ -77,11 +52,8 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 .tab.on{background:var(--bg);color:var(--acc);border-color:var(--line)}
 
 /* EDITOR TOOLBAR */
-#editor-tools {
-  display: flex; gap: 8px; padding: 6px 10px; background: var(--panel2);
-  border-bottom: 1px solid var(--line); flex: 0 0 auto;
-}
-#editor-tools .btn { padding: 4px 10px; font-size: 11px; }
+#editor-tools{display:flex;gap:8px;padding:6px 10px;background:var(--panel2);border-bottom:1px solid var(--line);flex:0 0 auto}
+#editor-tools .btn{padding:4px 10px;font-size:11px}
 
 #editor{flex:1;width:100%;background:var(--bg);color:var(--txt);border:none;outline:none;padding:14px;resize:none;font:inherit;font-size:13px;line-height:1.6;tab-size:2;white-space:pre;overflow:auto}
 #right{width:50%;display:flex;flex-direction:column;min-width:0;background:#0a0d12}
@@ -98,7 +70,7 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
   #left{width:100%;height:45%;border-right:none;border-bottom:1px solid var(--line)}
   #right{width:100%;height:55%}
   #console{height:100px}
-  #editor-tools { flex-wrap: wrap; }
+  #editor-tools{flex-wrap:wrap}
 }
 
 /* MODALS */
@@ -136,12 +108,18 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 
 /* DIFF UI */
 #diffuploads{display:flex;gap:14px;padding:14px;border-bottom:1px solid var(--line);flex:0 0 auto;flex-wrap:wrap}
-.upbox{flex:1;min-width:200px;background:var(--panel2);border:1px dashed var(--line);border-radius:8px;padding:12px;text-align:center;cursor:pointer}
+.upbox{flex:1;min-width:200px;background:var(--panel2);border:1px dashed var(--line);border-radius:8px;padding:12px;text-align:center;cursor:pointer;position:relative}
 .upbox:hover{border-color:var(--acc)}
 .upbox.done{border-style:solid;border-color:var(--acc)}
 .upbox .t{color:var(--dim);font-size:11px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
 .upbox .f{color:var(--txt);font-size:12px;word-break:break-all}
 .upbox input{display:none}
+.upbox .demo-btn {
+  position: absolute; bottom: 5px; right: 5px; font-size: 9px; background: var(--bg);
+  border: 1px solid var(--line); color: var(--dim); padding: 2px 6px; border-radius: 4px;
+  cursor: pointer; z-index: 10;
+}
+.upbox .demo-btn:hover { color: var(--acc); border-color: var(--acc); }
 #diffstats{padding:8px 14px;background:var(--panel2);border-bottom:1px solid var(--line);font-size:12px;display:flex;gap:16px;flex-wrap:wrap}
 #diffstats .s{color:var(--dim)}
 #diffstats .s b{color:var(--acc)}
@@ -192,7 +170,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 </head>
 <body>
 
-<!-- ================= LOGIN SCREEN ================= -->
 <div id="login-screen">
   <div class="login-box">
     <h2>NGHIAXZ.DEV</h2>
@@ -202,7 +179,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
     <button id="login-btn">Đăng Nhập</button>
   </div>
 </div>
-<!-- ================================================ -->
 
 <div id="top">
   <div id="brand">nghiaxz dev<span>.devkit</span></div>
@@ -308,8 +284,18 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
     <div class="mhead"><b>Offset Diff</b><div class="spacer"></div><button class="btn" id="diffClose">Đóng</button></div>
     <div class="mbody">
       <div id="diffuploads">
-        <label class="upbox" id="upOld"><div class="t">File CŨ (dump.cs)</div><div class="f" id="upOldF">Chọn file</div><input type="file" id="oldFile"></label>
-        <label class="upbox" id="upNew"><div class="t">File MỚI (dump.cs)</div><div class="f" id="upNewF">Chọn file</div><input type="file" id="newFile"></label>
+        <div class="upbox" id="upOld">
+          <div class="t">File CŨ (dump.cs)</div>
+          <div class="f" id="upOldF">Chọn file</div>
+          <div class="demo-btn" id="demoOld" onclick="loadDemoFile('old')">📋 Dùng mẫu</div>
+          <input type="file" id="oldFile">
+        </div>
+        <div class="upbox" id="upNew">
+          <div class="t">File MỚI (dump.cs)</div>
+          <div class="f" id="upNewF">Chọn file</div>
+          <div class="demo-btn" id="demoNew" onclick="loadDemoFile('new')">📋 Dùng mẫu</div>
+          <input type="file" id="newFile">
+        </div>
         <button class="btn blue" id="diffRun" style="align-self:center">So sánh</button>
       </div>
       <div id="diffstats">
@@ -502,36 +488,23 @@ editor.addEventListener('input', () => {
   editor._t = setTimeout(buildPreview, 450);
 });
 
-/* ================= EDITOR TOOLS ================= */
 document.getElementById('btnClearCode').onclick = () => {
   if (confirm('Xoá toàn bộ code trong tab này?')) {
-    editor.value = '';
-    state.files[state.active] = '';
-    buildPreview();
+    editor.value = ''; state.files[state.active] = ''; buildPreview();
   }
 };
-
 document.getElementById('btnPasteCode').onclick = async () => {
   try {
     const text = await navigator.clipboard.readText();
     if (text) {
-      editor.value += text;
-      state.files[state.active] = editor.value;
-      buildPreview();
-      sys('Đã dán code từ bộ nhớ tạm');
+      editor.value += text; state.files[state.active] = editor.value; buildPreview(); sys('Đã dán code từ bộ nhớ tạm');
     }
-  } catch (err) {
-    alert('Trình duyệt không cho phép đọc Clipboard tự động. Vui lòng nhấn giữ và chọn Dán (Paste) thủ công.');
-  }
+  } catch (err) { alert('Trình duyệt không cho phép đọc Clipboard tự động. Vui lòng chạm giữ và chọn Dán thủ công.'); }
 };
-
 document.getElementById('btnCopyCode').onclick = async () => {
   try {
-    await navigator.clipboard.writeText(editor.value);
-    sys('Đã sao chép toàn bộ code vào bộ nhớ tạm');
-  } catch (err) {
-    alert('Không thể sao chép. Vui lòng bôi đen code và nhấn Ctrl+C / Cmd+C.');
-  }
+    await navigator.clipboard.writeText(editor.value); sys('Đã sao chép toàn bộ code vào bộ nhớ tạm');
+  } catch (err) { alert('Không thể sao chép. Vui lòng bôi đen và Ctrl+C / Cmd+C.'); }
 };
 
 /* ================= PREVIEW ================= */
@@ -559,7 +532,6 @@ window.addEventListener('message', e => {
   log('[' + e.data.t + '] ' + e.data.a, e.data.t);
 });
 
-/* DROPDOWN LOGIC */
 const toolsBtn = document.getElementById('toolsBtn');
 const toolsMenu = document.getElementById('toolsMenu');
 toolsBtn.onclick = (e) => { e.stopPropagation(); toolsMenu.classList.toggle('show'); };
@@ -700,30 +672,191 @@ document.getElementById('scafBuild').onclick = async () => {
 
 /* ============ OFFSET DIFF ============ */
 const diffState = { old: null, new: null, oldName: '', newName: '', rows: [], filter: '' };
+
+// Parser đa năng: đọc được dump.cs chuẩn, dạng Tên = 0x..., dạng bảng
 function parseOffsets(text) {
-  const map = {}; const lines = text.split('\n'); let curClass = '';
+  const map = {};
+  if (!text || text.trim() === '') return map;
+
+  // Chuẩn hoá line endings và xoá BOM
+  const cleanText = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = cleanText.split('\n');
+  let curClass = '';
+
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]; const cm = line.match(/^\s*(?:public|private|internal|protected)?\s*(?:sealed\s+|abstract\s+)?(?:class|struct|interface)\s+([A-Za-z_]\w*)/);
-    if (cm) { curClass = cm[1]; continue; }
-    const rvaMatch = line.match(/\/\/\s*RVA:\s*(0x[0-9A-Fa-f]+)/);
-    if (rvaMatch && curClass) { for (let j = i + 1; j < Math.min(i + 4, lines.length); j++) { const sig = lines[j]; const mm = sig.match(/([A-Za-z_]\w*)\s*\(/); if (mm && !sig.trim().startsWith('//')) { const key = curClass + '::' + mm[1]; map[key] = rvaMatch[1].toLowerCase(); break; } } }
+    const raw = lines[i];
+    const line = raw.trim();
+    if (!line) continue;
+
+    // Class/Struct/Interface detection
+    const cm = line.match(/\b(?:class|struct|interface)\s+([A-Za-z_]\w*)/);
+    if (cm && !line.startsWith('//')) { curClass = cm[1]; continue; }
+
+    // RVA line (có hoặc không có //, chữ hoa/thường)
+    const rvaMatch = line.match(/RVA:\s*(0x[0-9a-fA-F]+)/i);
+    if (rvaMatch && curClass) {
+      // Tìm tên method trong 8 dòng tiếp theo
+      for (let j = i + 1; j < Math.min(i + 9, lines.length); j++) {
+        const sig = lines[j].trim();
+        if (!sig || sig.startsWith('//')) continue;
+        // Bắt tên trước dấu (
+        const mm = sig.match(/([A-Za-z_]\w*)\s*\(/);
+        if (mm) {
+          const key = curClass + '::' + mm[1];
+          map[key] = rvaMatch[1].toLowerCase();
+          break;
+        }
+      }
+    }
   }
-  const re2 = /([A-Za-z_][\w\.:]*(?:\.[\w]+)*)\s*[:=]\s*(0x[0-9A-Fa-f]+)/g; let m; while ((m = re2.exec(text))) { const key = m[1]; if (!map[key]) map[key] = m[2].toLowerCase(); }
-  const re3 = /^\s*([A-Za-z_][\w\.:]{2,})\s+(?:0x)?([0-9A-Fa-f]{4,16})\s*$/gm; while ((m = re3.exec(text))) { const key = m[1]; if (!map[key]) map[key] = '0x' + m[2].toLowerCase(); }
+
+  // Fallback 1: Tên = 0x... hoặc Tên: 0x...
+  const re2 = /([A-Za-z_][\w\.:]*)\s*[:=]\s*(0x[0-9a-fA-F]+)/gi;
+  let m;
+  while ((m = re2.exec(cleanText))) {
+    if (!map[m[1]]) map[m[1]] = m[2].toLowerCase();
+  }
+
+  // Fallback 2: Bảng dạng "Tên <khoảng trắng> hex"
+  const re3 = /^\s*([A-Za-z_][\w\.:]{2,})\s+(?:0x)?([0-9A-Fa-f]{5,16})\s*$/gm;
+  while ((m = re3.exec(cleanText))) {
+    if (!map[m[1]]) map[m[1]] = '0x' + m[2].toLowerCase();
+  }
+
   return map;
 }
-document.getElementById('oldFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { diffState.old = parseOffsets(r.result); diffState.oldName = f.name; document.getElementById('upOldF').textContent = f.name + ' (' + Object.keys(diffState.old).length + ')'; document.getElementById('upOld').classList.add('done'); }; r.readAsText(f); };
-document.getElementById('newFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { diffState.new = parseOffsets(r.result); diffState.newName = f.name; document.getElementById('upNewF').textContent = f.name + ' (' + Object.keys(diffState.new).length + ')'; document.getElementById('upNew').classList.add('done'); }; r.readAsText(f); };
-document.getElementById('diffRun').onclick = () => { if (!diffState.old || !diffState.new) { alert('Cần cả 2 file.'); return; } const oldMap = diffState.old, newMap = diffState.new; const allKeys = new Set([...Object.keys(oldMap), ...Object.keys(newMap)]); const rows = []; let add = 0, del = 0, chg = 0, same = 0; for (const k of allKeys) { const o = oldMap[k], n = newMap[k]; if (o && n) { if (o === n) { rows.push({ key: k, old: o, new: n, delta: '0', kind: 'same' }); same++; } else { const d = parseInt(n, 16) - parseInt(o, 16); rows.push({ key: k, old: o, new: n, delta: (d >= 0 ? '+' : '') + '0x' + Math.abs(d).toString(16), kind: 'chg' }); chg++; } } else if (n && !o) { rows.push({ key: k, old: '—', new: n, delta: 'NEW', kind: 'add' }); add++; } else { rows.push({ key: k, old: o, new: '—', delta: 'REMOVED', kind: 'del' }); del++; } } rows.sort((a, b) => a.key.localeCompare(b.key)); diffState.rows = rows; document.getElementById('stAdd').textContent = add; document.getElementById('stDel').textContent = del; document.getElementById('stChg').textContent = chg; document.getElementById('stSame').textContent = same; renderDiffTable(); };
+
+function loadFileInto(side, file) {
+  if (!file) return;
+  if (file.size === 0) { alert('File rỗng!'); return; }
+  if (file.size > 200 * 1024 * 1024) { alert('File quá lớn (>200MB)!'); return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const text = reader.result;
+    if (!text || text.trim() === '') { alert('File không có nội dung text!'); return; }
+    const parsed = parseOffsets(text);
+    const count = Object.keys(parsed).length;
+    if (side === 'old') {
+      diffState.old = parsed;
+      diffState.oldName = file.name;
+      document.getElementById('upOldF').textContent = file.name + ' (' + count + ')';
+      document.getElementById('upOld').classList.add('done');
+    } else {
+      diffState.new = parsed;
+      diffState.newName = file.name;
+      document.getElementById('upNewF').textContent = file.name + ' (' + count + ')';
+      document.getElementById('upNew').classList.add('done');
+    }
+    sys('Đọc file ' + side + ': ' + count + ' offset');
+    if (count === 0) alert('Không tìm thấy offset nào! Kiểm tra lại định dạng file dump.cs.');
+  };
+  reader.onerror = () => alert('Lỗi đọc file!');
+  reader.readAsText(file, 'UTF-8');
+}
+
+document.getElementById('oldFile').onchange = e => loadFileInto('old', e.target.files[0]);
+document.getElementById('newFile').onchange = e => loadFileInto('new', e.target.files[0]);
+
+// Dữ liệu mẫu để test
+const DEMO_OLD = `// Namespace: 
+public class Player // TypeDefIndex: 1234
+{
+    // Methods
+    // RVA: 0x1A2B3C4 Offset: 0x1A2B3C4 VA: 0x1A2B3C4
+    public void Update() { }
+
+    // RVA: 0x1A2C000 Offset: 0x1A2C000 VA: 0x1A2C000
+    public bool get_IsDead() { }
+}
+
+// Namespace: 
+public class Camera // TypeDefIndex: 5678
+{
+    // Methods
+    // RVA: 0x2F1A00 Offset: 0x2F1A00 VA: 0x2F1A00
+    public static Camera get_main() { }
+}`;
+
+const DEMO_NEW = `// Namespace: 
+public class Player // TypeDefIndex: 1234
+{
+    // Methods
+    // RVA: 0x1A2C10 Offset: 0x1A2C10 VA: 0x1A2C10
+    public void Update() { }
+
+    // RVA: 0x1A2D000 Offset: 0x1A2D000 VA: 0x1A2D000
+    public bool get_IsDead() { }
+}
+
+// Namespace: 
+public class Camera // TypeDefIndex: 5678
+{
+    // Methods
+    // RVA: 0x2F1BD0 Offset: 0x2F1BD0 VA: 0x2F1BD0
+    public static Camera get_main() { }
+}
+
+// Namespace: 
+public class GameFacade // TypeDefIndex: 9999
+{
+    // Methods
+    // RVA: 0x3F0A20 Offset: 0x3F0A20 VA: 0x3F0A20
+    public static Player[] get_Players() { }
+}`;
+
+window.loadDemoFile = (side) => {
+  const text = side === 'old' ? DEMO_OLD : DEMO_NEW;
+  const parsed = parseOffsets(text);
+  const count = Object.keys(parsed).length;
+  if (side === 'old') {
+    diffState.old = parsed; diffState.oldName = 'demo_old.cs';
+    document.getElementById('upOldF').textContent = 'demo_old.cs (' + count + ')';
+    document.getElementById('upOld').classList.add('done');
+  } else {
+    diffState.new = parsed; diffState.newName = 'demo_new.cs';
+    document.getElementById('upNewF').textContent = 'demo_new.cs (' + count + ')';
+    document.getElementById('upNew').classList.add('done');
+  }
+  sys('Đã nạp dữ liệu mẫu: ' + count + ' offset');
+};
+
+document.getElementById('diffRun').onclick = () => {
+  if (! =diffState.old || !diffState.new) { alert('Cần chọn đủ 2 file!'); return; }
+  const oldMap = diffState.old, newMap = diffState.new;
+  const allKeys = new Set([...Object.keys(oldMap), ...Object.keys(newMap)]);
+  const rows = [];
+  let add = 0, del = 0, chg = 0, same = 0;
+  for (const k of allKeys) {
+    const o = oldMap[k], n = newMap[k];
+    if (o && n) {
+      if (o === n) { rows.push({ key: k, old: o, new: n, delta: '0', kind: 'same' }); same++; }
+      else {
+        const d = parseInt(n, 16) - parseInt(o, 16);
+        rows.push({ key: k, old: o, new: n, delta: (d >= 0 ? '+' : '') + '0x' + Math.abs(d).toString(16), kind: 'chg' });
+        chg++;
+      }
+    } else if (n && !o) { rows.push({ key: k, old: '—', new: n, delta: 'NEW', kind: 'add' }); add++; }
+    else { rows.push({ key: k, old: o, new: '—', delta: 'REMOVED', kind: 'del' }); del++; }
+  }
+  rows.sort((a, b) => a.key.localeCompare(b.key));
+  diffState.rows = rows;
+  document.getElementById('stAdd').textContent = add;
+  document.getElementById('stDel').textContent = del;
+  document.getElementById('stChg').textContent = chg;
+  document.getElementById('stSame').textContent = same;
+  renderDiffTable();
+  sys('So sánh xong: ' + rows.length + ' dòng');
+};
+
 document.getElementById('diffFilter').addEventListener('input', e => { diffState.filter = e.target.value; renderDiffTable(); });
 document.getElementById('diffBtn').onclick = () => { document.getElementById('diffOverlay').classList.add('show'); };
 document.getElementById('diffClose').onclick = () => { document.getElementById('diffOverlay').classList.remove('show'); };
 function renderDiffTable() {
   const tbody = document.getElementById('diffTbody'); tbody.innerHTML = ''; const f = diffState.filter.toLowerCase();
-  const visible = diffState.rows.filter(r => !f || r.key.toLowerCase().includes(f) || (r.kind === 'chg' && !f));
+  const visible = diffState.rows.filter(r => !f || r.key.toLowerCase().includes(f));
   visible.forEach(r => { const tr = document.createElement('tr'); tr.className = r.kind; tr.innerHTML = `<td class="k">${r.key}</td><td class="o">${r.old}</td><td class="n">${r.new}</td><td class="d">${r.delta}</td>`; tbody.appendChild(tr); });
 }
-document.getElementById('diffExportH').onclick = () => { const changed = diffState.rows.filter(r => r.kind === 'chg' || r.kind === 'add'); if (!changed.length) { alert('Không có thay đổi.'); return; } const lines = ['#pragma once', '#include <cstdint>', '', 'namespace Offsets {']; const maxLen = changed.reduce((m, r) => Math.max(m, r.key.length), 10); changed.forEach(r => { const safe = r.key.replace(/::/g, '_').replace(/[^\w]/g, '_'); lines.push('    constexpr uintptr_t ' + safe.padEnd(maxLen + 2, ' ') + ' = ' + r.new + ';'); }); lines.push('}'); const blob = new Blob([lines.join('\n')], { type: 'text/plain' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Offsets_new.h'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+document.getElementById('diffExportH').onclick = () => { const changed = diffState.rows.filter(r => r.kind === 'chg' || r.kind === 'add'); if (!changed.length) { alert('Không có thay đổi.'); return; } const lines = ['#pragma once', '#include <cstdint>', '', 'namespace Offsets {']; const maxLen = changed.reduce((m, r) => Math.max(m, r.key.length), 10); changed.forEach(r => { const safe = r.key.replace(/::/g, '_').replace(/[^\w]/g, '_'); lines.push('    constexpr uintptr_t ' + safe.padEnd(maxLen + 2, ' ') + ' = ' + r.new + ';'); }); lines.push('}'); const blob = new Blob([lines.join('\n')], { type: 'text/plain' }); const a document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Offsets_new.h'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
 
 /* ============ KEY GRAB ============ */
 const kgState = { bytes: null, strings: [], data: { url: [], auth: [], key: [], uuid: [], hook: [] }, activeCat: 'url' };
@@ -751,7 +884,7 @@ document.getElementById('kgCopyHook').onclick = () => { if (!kgState.data.hook.l
 /* INIT */
 editor.value = state.files[state.active];
 renderTabs();
-sys('nghiaxz dev DevKit. Đã thêm nút Xoá / Dán / Sao chép cho Editor.');
+sys('nghiaxz dev DevKit. Đã cập nhật Offset Diff với parser mới.');
 </script>
 </body>
 </html>
