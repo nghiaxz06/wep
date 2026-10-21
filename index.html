@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>nghiaxz dev — DevKit (Protected)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2129;--line:#2b313a;--txt:#d7dde5;--dim:#7d8894;--acc:#5ce39a;--acc2:#4aa8ff;--red:#ff6b6b;--yel:#ffc85c;--pur:#a78bfa}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;display:flex;flex-direction:column;overflow:hidden}
+
+/* ================= LOGIN SCREEN ================= */
+#login-screen {
+  position: fixed; inset: 0; background: #07090c; z-index: 99999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background-image: radial-gradient(circle at 50% 0%, rgba(92,227,154,.15), transparent 60%);
+  transition: opacity 0.3s ease;
+}
+#login-screen.hide { opacity: 0; pointer-events: none; }
+.login-box {
+  background: var(--panel); border: 1px solid var(--line);
+  padding: 30px; border-radius: 12px; width: 100%; max-width: 320px;
+  text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,.5);
+}
+.login-box h2 { color: var(--acc); font-size: 20px; margin-bottom: 8px; letter-spacing: 1px; }
+.login-box p { color: var(--dim); font-size: 12px; margin-bottom: 20px; }
+.login-box input {
+  width: 100%; background: var(--bg); border: 1px solid var(--line);
+  color: var(--txt); padding: 12px; border-radius: 8px; font: inherit;
+  text-align: center; font-size: 18px; letter-spacing: 5px; outline: none;
+  margin-bottom: 15px; transition: 0.2s;
+}
+.login-box input:focus { border-color: var(--acc); }
+.login-box button {
+  width: 100%; background: var(--acc); color: #08110c; border: none;
+  padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px;
+  cursor: pointer; transition: 0.2s;
+}
+.login-box button:hover { background: #4ade80; }
+#login-err {
+  color: var(--red); font-size: 12px; margin-bottom: 15px; display: none;
+  animation: shake 0.3s ease-in-out;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+/* ================================================= */
+
+/* TOP BAR */
+#top{height:46px;display:flex;align-items:center;gap:8px;padding:0 14px;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;position:relative;z-index:100}
+#brand{font-weight:700;color:var(--acc);letter-spacing:.5px}
+#brand span{color:var(--dim);font-weight:400}
+.spacer{flex:1}
+.btn{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:6px 12px;border-radius:7px;cursor:pointer;font:inherit;font-size:12px;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.on{background:var(--acc);color:#08110c;border-color:var(--acc);font-weight:700}
+.btn.blue:hover{border-color:var(--acc2);color:var(--acc2)}
+.btn.red:hover{border-color:var(--red);color:var(--red)}
+
+/* DROPDOWN */
+.dropdown{position:relative;display:inline-block}
+.dropdown-content{display:none;position:absolute;right:0;top:38px;background:var(--panel2);min-width:190px;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;flex-direction:column}
+.dropdown-content.show{display:flex}
+.dropdown-content a{color:var(--txt);padding:10px 14px;text-decoration:none;font-size:12px;transition:.15s;cursor:pointer;display:flex;align-items:center;gap:8px}
+.dropdown-content a:hover{background:var(--line);color:var(--acc)}
+.dropdown-content hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+
+/* MAIN LAYOUT */
+#main{flex:1;display:flex;min-height:0}
+#left{width:50%;display:flex;flex-direction:column;border-right:1px solid var(--line);min-width:0}
+#tabs{display:flex;gap:2px;padding:6px 6px 0;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;flex:0 0 auto}
+.tab{padding:7px 13px;border-radius:7px 7px 0 0;cursor:pointer;font-size:12px;color:var(--dim);white-space:nowrap;border:1px solid transparent;border-bottom:none}
+.tab:hover{color:var(--txt)}
+.tab.on{background:var(--bg);color:var(--acc);border-color:var(--line)}
+
+/* EDITOR TOOLBAR */
+#editor-tools {
+  display: flex; gap: 8px; padding: 6px 10px; background: var(--panel2);
+  border-bottom: 1px solid var(--line); flex: 0 0 auto;
+}
+#editor-tools .btn { padding: 4px 10px; font-size: 11px; }
+
+#editor{flex:1;width:100%;background:var(--bg);color:var(--txt);border:none;outline:none;padding:14px;resize:none;font:inherit;font-size:13px;line-height:1.6;tab-size:2;white-space:pre;overflow:auto}
+#right{width:50%;display:flex;flex-direction:column;min-width:0;background:#0a0d12}
+#pvbar{height:38px;display:flex;align-items:center;gap:8px;padding:0 10px;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto}
+#pvurl{flex:1;color:var(--dim);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pv{flex:1;width:100%;border:none;background:#0b0e13}
+#console{height:140px;flex:0 0 auto;background:#07090c;border-top:1px solid var(--line);overflow:auto;padding:8px 12px;font-size:12px;line-height:1.55}
+.cl{white-space:pre-wrap;word-break:break-word}
+.cl.log{color:#a9b4c0}.cl.info{color:var(--acc2)}.cl.warn{color:var(--yel)}.cl.error{color:var(--red)}.cl.sys{color:var(--acc);opacity:.8}
+
+/* MOBILE RESPONSIVE */
+@media(max-width:768px){
+  #main{flex-direction:column}
+  #left{width:100%;height:45%;border-right:none;border-bottom:1px solid var(--line)}
+  #right{width:100%;height:55%}
+  #console{height:100px}
+  #editor-tools { flex-wrap: wrap; }
+}
+
+/* MODALS */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:999;padding:16px}
+.modal.show{display:flex}
+.mbox{width:100%;max-width:1120px;height:100%;max-height:760px;background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.mhead{height:50px;display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.mhead b{color:var(--acc)}
+.mbody{flex:1;display:flex;min-height:0;flex-direction:column}
+.mfoot{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:10px;flex:0 0 auto;align-items:center}
+.field{margin-bottom:10px}
+.field label{display:block;color:var(--dim);font-size:11px;margin-bottom:4px}
+.field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--txt);padding:8px;border-radius:6px;font:inherit;font-size:12px;outline:none}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--acc)}
+.field textarea{resize:vertical;min-height:56px}
+.hint{color:var(--dim);font-size:11px;line-height:1.6;margin-top:6px}
+.mlog{height:110px;border-top:1px solid var(--line);background:#07090c;padding:8px 12px;overflow:auto;font-size:12px;line-height:1.5;flex:0 0 auto}
+
+/* SPECIFIC MODAL BODIES */
+#debform{width:100%;padding:14px;overflow:auto;flex:0 0 auto;border-bottom:1px solid var(--line)}
+#debfiles{flex:1;padding:14px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+#tree{display:flex;flex-direction:column;gap:6px}
+.trow{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:7px 10px;font-size:12px}
+.trow .p{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trow .sz{color:var(--dim);font-size:11px}
+.trow .x{cursor:pointer;color:var(--dim);padding:0 4px}
+.trow .x:hover{color:var(--red)}
+.badge{font-size:10px;padding:2px 6px;border-radius:4px;background:#233;color:var(--acc2)}
+#scafForm{width:100%;padding:14px;overflow:auto;flex:0 0 auto;border-bottom:1px solid var(--line)}
+#scafFiles{flex:1;padding:14px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.scafRow{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;font-size:12px}
+.scafRow .ico{color:var(--acc);width:16px;text-align:center}
+.scafRow .nm{flex:1}
+.scafRow .sz{color:var(--dim);font-size:11px}
+
+/* DIFF UI */
+#diffuploads{display:flex;gap:14px;padding:14px;border-bottom:1px solid var(--line);flex:0 0 auto;flex-wrap:wrap}
+.upbox{flex:1;min-width:200px;background:var(--panel2);border:1px dashed var(--line);border-radius:8px;padding:12px;text-align:center;cursor:pointer}
+.upbox:hover{border-color:var(--acc)}
+.upbox.done{border-style:solid;border-color:var(--acc)}
+.upbox .t{color:var(--dim);font-size:11px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.upbox .f{color:var(--txt);font-size:12px;word-break:break-all}
+.upbox input{display:none}
+#diffstats{padding:8px 14px;background:var(--panel2);border-bottom:1px solid var(--line);font-size:12px;display:flex;gap:16px;flex-wrap:wrap}
+#diffstats .s{color:var(--dim)}
+#diffstats .s b{color:var(--acc)}
+#diffstats .s.add b{color:var(--acc)}
+#diffstats .s.del b{color:var(--red)}
+#diffstats .s.chg b{color:var(--yel)}
+#diffsearch{padding:8px 14px;border-bottom:1px solid var(--line);flex:0 0 auto}
+#diffsearch input{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--txt);padding:6px 10px;border-radius:6px;font:inherit;font-size:12px;outline:none}
+#difftable{flex:1;overflow:auto;font-size:12px}
+#difftable table{width:100%;border-collapse:collapse}
+#difftable th{position:sticky;top:0;background:var(--panel2);padding:8px 10px;text-align:left;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--line)}
+#difftable td{padding:6px 10px;border-bottom:1px solid #1e242c;font-size:12px}
+#difftable td.k{color:var(--txt);max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#difftable td.o{color:var(--dim);font-family:monospace}
+#difftable td.n{color:var(--txt);font-family:monospace}
+#difftable td.d{font-family:monospace;font-size:11px}
+#difftable tr.add td.d{color:var(--acc)}
+#difftable tr.del td.d{color:var(--red)}
+#difftable tr.chg td.d{color:var(--yel)}
+#difftable tr.add{background:rgba(92,227,154,.04)}
+#difftable tr.del{background:rgba(255,107,107,.04)}
+#difftable tr.chg{background:rgba(255,200,92,.04)}
+
+/* KEYGRAB UI */
+#kgup{padding:14px;border-bottom:1px solid var(--line);flex:0 0 auto}
+#kgdrop{background:var(--panel2);border:2px dashed var(--line);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:.15s}
+#kgdrop:hover,#kgdrop.over{border-color:var(--acc);background:rgba(92,227,154,.05)}
+#kgdrop .i{font-size:32px;margin-bottom:8px;color:var(--acc)}
+#kgdrop .t{color:var(--txt);font-size:13px}
+#kgdrop .s{color:var(--dim);font-size:11px;margin-top:4px}
+#kgstats{padding:8px 14px;background:var(--panel2);border-bottom:1px solid var(--line);font-size:12px;display:flex;gap:16px;flex-wrap:wrap}
+#kgstats .s b{color:var(--acc)}
+#kgtabs{display:flex;gap:2px;padding:6px 14px 0;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;overflow-x:auto}
+.kgtab{padding:6px 12px;border-radius:7px 7px 0 0;cursor:pointer;font-size:11px;color:var(--dim);border:1px solid transparent;border-bottom:none;white-space:nowrap}
+.kgtab:hover{color:var(--txt)}
+.kgtab.on{background:var(--bg);color:var(--acc);border-color:var(--line)}
+.kgtab .cnt{display:inline-block;background:#2b313a;color:var(--dim);padding:0 5px;border-radius:8px;font-size:10px;margin-left:4px}
+.kgtab.on .cnt{background:var(--acc);color:#08110c}
+#kglist{flex:1;overflow:auto;padding:8px 14px 14px}
+.kgrow{display:flex;align-items:center;gap:10px;padding:7px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;margin-bottom:6px;font-size:12px}
+.kgrow:hover{border-color:var(--acc)}
+.kgrow .v{flex:1;word-break:break-all;font-family:monospace;font-size:11px}
+.kgrow .cp{cursor:pointer;color:var(--dim);padding:2px 6px;border-radius:4px;font-size:11px}
+.kgrow .cp:hover{background:var(--line);color:var(--acc)}
+.kgrow.crit .v{color:var(--yel)}
+.kghook{width:100%;background:#07090c;border:1px solid var(--line);color:var(--txt);font-family:monospace;font-size:11px;line-height:1.5;padding:10px;border-radius:6px;min-height:120px;resize:vertical;outline:none}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN SCREEN ================= -->
+<div id="login-screen">
+  <div class="login-box">
+    <h2>NGHIAXZ.DEV</h2>
+    <p>Nhập mật khẩu để truy cập DevKit</p>
+    <div id="login-err">Sai mật khẩu!</div>
+    <input type="password" id="pass-input" placeholder="••••" autocomplete="off">
+    <button id="login-btn">Đăng Nhập</button>
+  </div>
+</div>
+<!-- ================================================ -->
+
+<div id="top">
+  <div id="brand">nghiaxz dev<span>.devkit</span></div>
+  <div class="spacer"></div>
+  <button class="btn on" id="runBtn">Run ▶</button>
+  <button class="btn" id="clrBtn">Clear log</button>
+  <div class="dropdown">
+    <button class="btn blue" id="toolsBtn">Tools ☰</button>
+    <div class="dropdown-content" id="toolsMenu">
+      <a id="mMenu">👁 Preview nghiaxz.Dev</a>
+      <a id="mDark">👁 Preview nghiaxz.Dev (Dark)</a>
+      <hr>
+      <a id="scafBtn">📦 New Project</a>
+      <a id="diffBtn">⚖ Offset Diff</a>
+      <a id="kgBtn">🔑 Key Grab</a>
+      <hr>
+      <a id="debBtn">📦 Build .deb</a>
+    </div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="left">
+    <div id="tabs"></div>
+    <div id="editor-tools">
+      <button class="btn red" id="btnClearCode">🗑️ Xoá sạch</button>
+      <button class="btn" id="btnPasteCode">📋 Dán</button>
+      <button class="btn" id="btnCopyCode">📄 Sao chép</button>
+    </div>
+    <textarea id="editor" spellcheck="false"></textarea>
+  </div>
+  <div id="right">
+    <div id="pvbar">
+      <span id="pvurl">preview</span>
+      <button class="btn" id="relBtn" style="padding:4px 8px;font-size:11px">Reload</button>
+    </div>
+    <iframe id="pv" sandbox="allow-scripts allow-modals allow-forms allow-popups allow-same-origin"></iframe>
+  </div>
+</div>
+
+<div id="console"></div>
+
+<!-- MODAL: BUILD DEB -->
+<div id="overlay" class="modal">
+  <div class="mbox">
+    <div class="mhead"><b>nghiaxz dev — Deb Builder</b><div class="spacer"></div><button class="btn" id="debClose">Đóng</button></div>
+    <div class="mbody" style="flex-direction:row">
+      <div id="debform">
+        <div class="field"><label>Package</label><input id="f_pkg" value="com.nghiaxz.ffmenu"></div>
+        <div class="field"><label>Name</label><input id="f_name" value="nghiaxz dev Menu"></div>
+        <div class="field"><label>Version</label><input id="f_ver" value="1.0.0"></div>
+        <div class="field"><label>Architecture</label><input id="f_arch" value="iphoneos-arm64"></div>
+        <div class="field"><label>Maintainer</label><input id="f_maint" value="nghiaxz dev"></div>
+        <div class="field"><label>Author</label><input id="f_auth" value="nghiaxz dev"></div>
+        <div class="field"><label>Depends</label><input id="f_dep" value="mobilesubstrate"></div>
+        <div class="field"><label>Description</label><textarea id="f_desc">Menu hack FF cho iOS</textarea></div>
+        <div class="field"><label>Tên dylib</label><input id="f_dylib" value="NghiaxzMenu"></div>
+        <div class="field"><label>Filter Bundle</label><input id="f_bundle" value="com.dts.freefireth"></div>
+        <div class="field"><label>Dylib (.dylib)</label><input type="file" id="f_up" accept=".dylib"></div>
+        <div class="hint">Upload dylib đã compile. Tool đóng gói ra .deb.</div>
+      </div>
+      <div id="debfiles">
+        <div style="display:flex;align-items:center;gap:10px"><b style="color:var(--acc)">Files data.tar.gz</b><div class="spacer"></div><button class="btn" id="addFile">+ File</button></div>
+        <div id="tree"></div>
+      </div>
+    </div>
+    <div class="mlog" id="deblog"></div>
+    <div class="mfoot"><button class="btn on" id="buildBtn">Tải .deb</button><div class="spacer"></div><span class="hint" style="margin:0" id="estSize">—</span></div>
+  </div>
+</div>
+
+<!-- MODAL: NEW PROJECT -->
+<div id="scafOverlay" class="modal">
+  <div class="mbox">
+    <div class="mhead"><b>New Project (Theos)</b><div class="spacer"></div><button class="btn" id="scafClose">Đóng</button></div>
+    <div class="mbody" style="flex-direction:row">
+      <div id="scafForm">
+        <div class="field"><label>Tên project</label><input id="s_proj" value="NghiaxzMenu"></div>
+        <div class="field"><label>Package ID</label><input id="s_pkg" value="com.nghiaxz.nghiaxzmenu"></div>
+        <div class="field"><label>Name</label><input id="s_name" value="nghiaxz dev Menu"></div>
+        <div class="field"><label>Author</label><input id="s_author" value="nghiaxz dev"></div>
+        <div class="field"><label>Version</label><input id="s_ver" value="1.0.0"></div>
+        <div class="field"><label>Bundle Filter</label><input id="s_bundle" value="com.dts.freefireth"></div>
+        <div class="field"><label>Kiểu</label>
+          <select id="s_type">
+            <option value="menu">Menu nghiaxz.Dev (FF)</option>
+            <option value="darksword">Menu nghiaxz.Dev (Dark)</option>
+            <option value="hook">Hook SpringBoard</option>
+          </select>
+        </div>
+        <div class="field"><label>Description</label><textarea id="s_desc">nghiaxz dev — Tweak iOS</textarea></div>
+      </div>
+      <div id="scafFiles"></div>
+    </div>
+    <div class="mlog" id="scafLog"></div>
+    <div class="mfoot"><button class="btn on" id="scafBuild">Tải .zip</button><div class="spacer"></div><span class="hint" style="margin:0" id="scafSize">—</span></div>
+  </div>
+</div>
+
+<!-- MODAL: DIFF -->
+<div id="diffOverlay" class="modal">
+  <div class="mbox">
+    <div class="mhead"><b>Offset Diff</b><div class="spacer"></div><button class="btn" id="diffClose">Đóng</button></div>
+    <div class="mbody">
+      <div id="diffuploads">
+        <label class="upbox" id="upOld"><div class="t">File CŨ (dump.cs)</div><div class="f" id="upOldF">Chọn file</div><input type="file" id="oldFile"></label>
+        <label class="upbox" id="upNew"><div class="t">File MỚI (dump.cs)</div><div class="f" id="upNewF">Chọn file</div><input type="file" id="newFile"></label>
+        <button class="btn blue" id="diffRun" style="align-self:center">So sánh</button>
+      </div>
+      <div id="diffstats">
+        <div class="s add">Thêm <b id="stAdd">0</b></div>
+        <div class="s del">Xoá <b id="stDel">0</b></div>
+        <div class="s chg">Đổi <b id="stChg">0</b></div>
+        <div class="s">Giữ <b id="stSame">0</b></div>
+      </div>
+      <div id="diffsearch"><input id="diffFilter" placeholder="Lọc class / method..."></div>
+      <div id="difftable">
+        <table><thead><tr><th>Method</th><th>Old RVA</th><th>New RVA</th><th>Delta</th></tr></thead><tbody id="diffTbody"></tbody></table>
+      </div>
+    </div>
+    <div class="mfoot"><button class="btn on" id="diffExportH">Xuất Offsets.h</button></div>
+  </div>
+</div>
+
+<!-- MODAL: KEYGRAB -->
+<div id="kgOverlay" class="modal">
+  <div class="mbox">
+    <div class="mhead"><b>Key Grab (Dump dylib)</b><div class="spacer"></div><button class="btn" id="kgClose">Đóng</button></div>
+    <div class="mbody">
+      <div id="kgup">
+        <div id="kgdrop">
+          <div class="i">🔑</div>
+          <div class="t">Kéo thả .dylib hoặc click để chọn</div>
+          <div class="s">Lọc URL, Auth, Key, sinh hook bypass</div>
+          <input type="file" id="kgFile" accept=".dylib,.*" style="display:none">
+        </div>
+      </div>
+      <div id="kgstats">
+        <div class="s">Size <b id="kgSize">0 KB</b></div>
+        <div class="s">Strings <b id="kgTotal">0</b></div>
+        <div class="s">URL <b id="kgUrlN">0</b></div>
+        <div class="s">Auth <b id="kgAuthN">0</b></div>
+        <div class="s">Hook <b id="kgHookN">0</b></div>
+      </div>
+      <div id="kgtabs">
+        <div class="kgtab on" data-cat="url">URL <span class="cnt" id="cntUrl">0</span></div>
+        <div class="kgtab" data-cat="auth">Auth <span class="cnt" id="cntAuth">0</span></div>
+        <div class="kgtab" data-cat="key">Key <span class="cnt" id="cntKey">0</span></div>
+        <div class="kgtab" data-cat="uuid">UUID <span class="cnt" id="cntUuid">0</span></div>
+        <div class="kgtab" data-cat="hook">Hook <span class="cnt" id="cntHook">0</span></div>
+      </div>
+      <div id="kglist"></div>
+    </div>
+    <div class="mfoot"><button class="btn" id="kgCopyAll">Copy tab</button><button class="btn red" id="kgCopyHook">Copy hook bypass</button></div>
+  </div>
+</div>
+
+<script>
+/* ================= SECURITY & LOGIN ================= */
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (e.key === 'F12' || 
+      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
+      (e.ctrlKey && e.key === 'U')) {
+    e.preventDefault();
+  }
+});
+
+const loginScreen = document.getElementById('login-screen');
+const passInput = document.getElementById('pass-input');
+const loginBtn = document.getElementById('login-btn');
+const loginErr = document.getElementById('login-err');
+
+const SECURE_PASS = [56, 57, 48, 54].map(c => String.fromCharCode(c)).join('');
+
+function checkAuth() {
+  if (sessionStorage.getItem('nghiaxz_auth') === '1') {
+    loginScreen.classList.add('hide');
+    setTimeout(() => { loginScreen.style.display = 'none'; buildPreview(); }, 300);
+  }
+}
+
+loginBtn.onclick = () => {
+  if (passInput.value === SECURE_PASS) {
+    sessionStorage.setItem('nghiaxz_auth', '1');
+    checkAuth();
+  } else {
+    loginErr.style.display = 'block';
+    passInput.value = '';
+    passInput.focus();
+    const box = document.querySelector('.login-box');
+    box.style.transform = 'translateX(-5px)';
+    setTimeout(() => box.style.transform = 'translateX(5px)', 50);
+    setTimeout(() => box.style.transform = 'translateX(-5px)', 100);
+    setTimeout(() => box.style.transform = 'translateX(0)', 150);
+  }
+};
+
+passInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') loginBtn.click();
+});
+
+/* ================= STATE & UI ================= */
+const state = {
+  active: 'index.html',
+  preview: 'web',
+  files: {
+    'index.html': '<div class="card">\n  <h1>nghiaxz dev</h1>\n  <p>Test HTML / CSS / JS ngay trong khung bên phải.</p>\n  <button id="go">Bấm thử</button>\n  <pre id="out">—</pre>\n</div>\n',
+    'style.css': 'body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:system-ui,sans-serif;background:linear-gradient(135deg,#0f172a,#1e293b);color:#e2e8f0}\n.card{background:rgba(255,255,255,.05);border:1px solid rgba(92,227,154,.4);border-radius:16px;padding:32px 40px;backdrop-filter:blur(8px);text-align:center}\nh1{margin:0 0 8px;color:#5ce39a;font-size:22px}\np{margin:0 0 18px;color:#94a3b8;font-size:14px}\nbutton{background:#5ce39a;border:none;color:#08110c;font-weight:700;padding:10px 22px;border-radius:9px;cursor:pointer;font-size:14px}\nbutton:active{transform:scale(.97)}\npre{margin:18px 0 0;color:#7dd3fc;font-size:12px}\n',
+    'app.js': 'const out = document.getElementById("out");\ndocument.getElementById("go").addEventListener("click", () => {\n  out.textContent = "ok " + new Date().toLocaleTimeString();\n  console.log("bấm lúc", new Date().toISOString());\n});\nconsole.log("app.js loaded");\n',
+    'menu.html': `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#0b0e13;display:grid;place-items:center;min-height:100vh}
+.window{width:340px;background:rgba(22,25,32,.95);border:1px solid #333;border-radius:4px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.8);backdrop-filter:blur(4px)}
+.header{display:flex;align-items:center;justify-content:space-between;background:#1a1c22;padding:8px 12px;border-bottom:1px solid #333}
+.title{color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.title span{color:#00e5ff}
+.close{color:#999;background:#333;border:1px solid #444;padding:2px 8px;border-radius:3px;font-size:12px;cursor:pointer}
+.tabs{display:flex;border-bottom:1px solid #333;background:#14161a}
+.tab{flex:1;text-align:center;padding:10px 0;color:#888;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;transition:.2s}
+.tab.active{color:#fff;border-bottom:2px solid #00e5ff}
+.content{padding:12px}
+.section{color:#666;font-size:11px;margin-bottom:10px}
+.item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;color:#ccc;font-size:13px}
+.checkbox{width:20px;height:20px;border:1px solid #555;border-radius:2px;background:#222;cursor:pointer;position:relative;transition:.1s}
+.checkbox.checked{background:#00e5ff;border-color:#00e5ff}
+.checkbox.checked::after{content:'';position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #111;border-width:0 2px 2px 0;transform:rotate(45deg)}
+</style></head><body><div class="window"><div class="header"><div class="title">⚙️ <span>NGHIAXZ.DEV FF</span></div><div class="close">✕</div></div><div class="tabs"><div class="tab active">VIS</div><div class="tab">AIM</div><div class="tab">MEM</div><div class="tab">SET</div></div><div class="content"><div class="section">-- ESP --</div><div class="item"><span>Lines</span><div class="checkbox checked"></div></div><div class="item"><span>Boxes</span><div class="checkbox checked"></div></div><div class="item"><span>Name</span><div class="checkbox checked"></div></div><div class="item"><span>Health</span><div class="checkbox checked"></div></div><div class="item"><span>Distance</span><div class="checkbox"></div></div></div></div><script>document.querySelectorAll(".checkbox").forEach(cb=>{cb.onclick=()=>{cb.classList.toggle("checked");console.log("Toggle:",cb.parentElement.querySelector("span").textContent,cb.classList.contains("checked"))}});document.querySelectorAll(".tab").forEach(tab=>{tab.onclick=()=>{document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));tab.classList.add("active")}});<\/script></body></html>`,
+    'darksword.html': `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#07070a;display:grid;place-items:center;min-height:100vh;background-image:radial-gradient(circle at 50% 0%,rgba(120,60,220,.18),transparent 60%)}
+.ds-panel{width:300px;background:#110d1a;border:1px solid #3a2a55;border-radius:12px;overflow:hidden;box-shadow:0 12px 40px rgba(80,40,160,.35)}
+.ds-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:linear-gradient(135deg,#2a1b45,#1a1226);border-bottom:1px solid #3a2a55}
+.ds-brand{display:flex;flex-direction:column;gap:2px}
+.ds-title{font-size:15px;font-weight:800;letter-spacing:2px;background:linear-gradient(90deg,#c084fc,#a78bfa,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ds-title::before{content:"⚔ ";color:#a78bfa;-webkit-text-fill-color:#a78bfa;font-size:13px}
+.ds-sub{font-size:9px;color:#6b5f7e;letter-spacing:1px}
+.ds-ver{font-size:9px;color:#a78bfa;background:#1e1530;border:1px solid #3a2a55;padding:2px 6px;border-radius:4px}
+.ds-tabs{display:flex;background:#0d0a14;border-bottom:1px solid #241a38}
+.ds-tab{flex:1;text-align:center;padding:9px 0;font-size:10px;letter-spacing:1.5px;color:#5a4c72;cursor:pointer;border-bottom:2px solid transparent;transition:.15s}
+.ds-tab:hover{color:#a78bfa}
+.ds-tab.active{color:#c084fc;border-bottom-color:#8b5cf6;background:linear-gradient(180deg,transparent,rgba(139,92,246,.08))}
+.ds-body{padding:10px 12px 12px}
+.ds-sec{font-size:9px;color:#8b5cf6;letter-spacing:2px;font-weight:700;margin:10px 0 6px;display:flex;align-items:center;gap:6px}
+.ds-sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,#3a2a55,transparent)}
+.ds-row{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:6px;transition:.12s}
+.ds-row:hover{background:rgba(139,92,246,.06)}
+.ds-label{font-size:12px;color:#c9c0d8}
+.ds-toggle{width:34px;height:18px;border-radius:9px;background:#1a1426;border:1px solid #3a2a55;position:relative;cursor:pointer;transition:.18s;flex:0 0 auto}
+.ds-toggle i{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#7a6a92;transition:.18s}
+.ds-toggle.on{background:#3b2166;border-color:#8b5cf6;box-shadow:0 0 8px rgba(139,92,246,.5)}
+.ds-toggle.on i{left:18px;background:#c084fc;box-shadow:0 0 6px #a78bfa}
+.ds-slide{margin-top:10px}
+.ds-slide label{display:flex;justify-content:space-between;font-size:10px;color:#8b5cf6;letter-spacing:1px;margin-bottom:5px}
+input[type=range]{width:100%;-webkit-appearance:none;height:3px;border-radius:2px;background:#241a38;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#c084fc;cursor:pointer;box-shadow:0 0 8px #8b5cf6}
+.ds-foot{padding:8px 12px;border-top:1px solid #241a38;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#5a4c72;letter-spacing:1px}
+.ds-foot b{color:#a78bfa;font-weight:600}
+.ds-foot .dot{color:#22c55e}
+</style></head><body><div class="ds-panel"><div class="ds-head"><div class="ds-brand"><div class="ds-title">NGHIAXZ.DEV</div><div class="ds-sub">dark edition</div></div><div class="ds-ver">v2.1</div></div><div class="ds-tabs"><div class="ds-tab active">VIS</div><div class="ds-tab">AIM</div><div class="ds-tab">MISC</div><div class="ds-tab">CFG</div></div><div class="ds-body"><div class="ds-sec">ESP</div><div class="ds-row"><span class="ds-label">Lines</span><div class="ds-toggle on"><i></i></div></div><div class="ds-row"><span class="ds-label">Boxes</span><div class="ds-toggle on"><i></i></div></div><div class="ds-row"><span class="ds-label">Name</span><div class="ds-toggle on"><i></i></div></div><div class="ds-row"><span class="ds-label">Health</span><div class="ds-toggle on"><i></i></div></div><div class="ds-row"><span class="ds-label">Distance</span><div class="ds-toggle"><i></i></div></div><div class="ds-sec">AIMBOT</div><div class="ds-row"><span class="ds-label">Enable</span><div class="ds-toggle"><i></i></div></div><div class="ds-slide"><label><span>FOV</span><span id="ds-fov">120</span></label><input type="range" id="ds-fov-r" min="10" max="400" value="120"></div></div><div class="ds-foot"><span><span class="dot">●</span> <b>UNDETECTED</b></span><span>nghiaxz.dev</span></div></div><script>document.querySelectorAll(".ds-toggle").forEach(t=>{t.onclick=()=>{t.classList.toggle("on");console.log("toggle",t.classList.contains("on"))}});document.querySelectorAll(".ds-tab").forEach(t=>{t.onclick=()=>{document.querySelectorAll(".ds-tab").forEach(x=>x.classList.remove("active"));t.classList.add("active")}});const fr=document.getElementById("ds-fov-r");if(fr)fr.oninput=e=>document.getElementById("ds-fov").textContent=e.target.value;<\/script></body></html>`
+  },
+  debTree: [],
+  dylibBytes: null
+};
+
+const editor = document.getElementById('editor');
+const tabsEl = document.getElementById('tabs');
+const pv = document.getElementById('pv');
+const pvurl = document.getElementById('pvurl');
+const consoleEl = document.getElementById('console');
+
+function log(msg, cls) {
+  const d = document.createElement('div');
+  d.className = 'cl ' + (cls || 'sys');
+  d.textContent = msg;
+  consoleEl.appendChild(d);
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+function sys(msg) { log(msg, 'sys'); }
+
+function renderTabs() {
+  tabsEl.innerHTML = '';
+  Object.keys(state.files).forEach(k => {
+    const t = document.createElement('div');
+    t.className = 'tab' + (k === state.active ? ' on' : '');
+    t.textContent = k;
+    t.onclick = () => { state.active = k; editor.value = state.files[k]; renderTabs(); };
+    tabsEl.appendChild(t);
+  });
+}
+
+editor.addEventListener('input', () => {
+  state.files[state.active] = editor.value;
+  clearTimeout(editor._t);
+  editor._t = setTimeout(buildPreview, 450);
+});
+
+/* ================= EDITOR TOOLS ================= */
+document.getElementById('btnClearCode').onclick = () => {
+  if (confirm('Xoá toàn bộ code trong tab này?')) {
+    editor.value = '';
+    state.files[state.active] = '';
+    buildPreview();
+  }
+};
+
+document.getElementById('btnPasteCode').onclick = async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    if (text) {
+      editor.value += text;
+      state.files[state.active] = editor.value;
+      buildPreview();
+      sys('Đã dán code từ bộ nhớ tạm');
+    }
+  } catch (err) {
+    alert('Trình duyệt không cho phép đọc Clipboard tự động. Vui lòng nhấn giữ và chọn Dán (Paste) thủ công.');
+  }
+};
+
+document.getElementById('btnCopyCode').onclick = async () => {
+  try {
+    await navigator.clipboard.writeText(editor.value);
+    sys('Đã sao chép toàn bộ code vào bộ nhớ tạm');
+  } catch (err) {
+    alert('Không thể sao chép. Vui lòng bôi đen code và nhấn Ctrl+C / Cmd+C.');
+  }
+};
+
+/* ================= PREVIEW ================= */
+const HOOK = `<script>(function(){
+const send=(t,a)=>parent.postMessage({__nghiaxz:true,t,a:Array.from(a).map(x=>{try{return typeof x==="object"?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(" ")}, "*");
+["log","warn","error","info"].forEach(k=>{const o=console[k].bind(console);console[k]=(...a)=>{send(k,a);o(...a)}});
+window.onerror=(m,s,l,c)=>send("error",[m+" @"+l+":"+c]);
+window.addEventListener("unhandledrejection",e=>send("error",["unhandled: "+e.reason]));
+<\/script>`;
+
+function buildPreview() {
+  let doc;
+  if (state.preview === 'menu') { doc = state.files['menu.html']; pvurl.textContent = 'nghiaxz.dev-preview'; }
+  else if (state.preview === 'darksword') { doc = state.files['darksword.html']; pvurl.textContent = 'nghiaxz.dev-dark-preview'; }
+  else {
+    const html = state.files['index.html'], css = state.files['style.css'], js = state.files['app.js'];
+    doc = '<!DOCTYPE html><html><head><meta charset="utf-8">' + HOOK + '<style>' + css + '</style></head><body>' + html + '<script>' + js + '<\/script></body></html>';
+    pvurl.textContent = 'index.html + style.css + app.js';
+  }
+  pv.srcdoc = doc;
+}
+
+window.addEventListener('message', e => {
+  if (!e.data || !e.data.__nghiaxz) return;
+  log('[' + e.data.t + '] ' + e.data.a, e.data.t);
+});
+
+/* DROPDOWN LOGIC */
+const toolsBtn = document.getElementById('toolsBtn');
+const toolsMenu = document.getElementById('toolsMenu');
+toolsBtn.onclick = (e) => { e.stopPropagation(); toolsMenu.classList.toggle('show'); };
+document.addEventListener('click', () => { toolsMenu.classList.remove('show'); });
+
+document.getElementById('mMenu').onclick = () => { state.preview = 'menu'; buildPreview(); };
+document.getElementById('mDark').onclick = () => { state.preview = 'darksword'; buildPreview(); };
+document.getElementById('runBtn').onclick = () => { state.preview = 'web'; sys('── run web ──'); buildPreview(); };
+document.getElementById('clrBtn').onclick = () => { consoleEl.innerHTML = ''; };
+document.getElementById('relBtn').onclick = buildPreview;
+
+/* UTILS */
+function concat(chunks) { let total = 0; chunks.forEach(c => total += c.length); const out = new Uint8Array(total); let off = 0; chunks.forEach(c => { out.set(c, off); off += c.length; }); return out; }
+function oct(n, len) { let s = Math.floor(n).toString(8); if (s.length > len - 1) s = s.slice(s.length - (len - 1)); return s.padStart(len - 1, '0') + '\0'; }
+function tarHeader(name, size, type, mode) {
+  const b = new Uint8Array(512); const enc = new TextEncoder(); const put = (s, o, l) => { b.set(enc.encode(s).subarray(0, l), o); };
+  put(name, 0, 100); put(oct(mode || 420, 8), 100, 8); put(oct(0, 8), 108, 8); put(oct(0, 8), 116, 8); put(oct(size, 12), 124, 12); put(oct(Math.floor(Date.now() / 1000), 12), 136, 12); put('        ', 148, 8); put(type || '0', 156, 1); put('ustar', 257, 6); put('00', 263, 2); put('root', 265, 32); put('root', 297, 32); put(oct(0, 8), 329, 8); put(oct(0, 8), 337, 8);
+  let sum = 0; for (let i = 0; i < 512; i++) sum += b[i]; put(sum.toString(8).padStart(6, '0') + '\0 ', 148, 8); return b;
+}
+function makeTar(entries) {
+  const chunks = []; entries.forEach(e => { const data = e.dir ? new Uint8Array(0) : e.data; const nm = e.path + (e.dir ? '/' : ''); chunks.push(tarHeader(nm, data.length, e.dir ? '5' : '0', e.mode)); if (!e.dir) { chunks.push(data); const pad = (512 - (data.length % 512)) % 512; if (pad) chunks.push(new Uint8Array(pad)); } }); chunks.push(new Uint8Array(1024)); return concat(chunks);
+}
+async function gzip(bytes) { const cs = new CompressionStream('gzip'); const stream = new Blob([bytes]).stream().pipeThrough(cs); return new Uint8Array(await new Response(stream).arrayBuffer()); }
+function arMember(name, data) {
+  const h = new Uint8Array(60); const enc = new TextEncoder(); const put = (s, o, l) => { h.set(enc.encode(s).subarray(0, l), o); };
+  put(name + '/', 0, 16); put(String(Math.floor(Date.now() / 1000)), 16, 12); put('0', 28, 6); put('0', 34, 6); put('100644', 40, 8); put(String(data.length), 48, 10); put('`\n', 58, 2);
+  const parts = [h, data]; if (data.length % 2) parts.push(new Uint8Array([10])); return concat(parts);
+}
+const CRC_TABLE = (() => { const t = new Uint32Array(256); for (let i = 0; i < 256; i++) { let c = i; for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); t[i] = c >>> 0; } return t; })();
+function crc32(bytes) { let c = 0xFFFFFFFF; for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function u16(v) { return [v & 0xFF, (v >>> 8) & 0xFF]; }
+function u32(v) { return [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF]; }
+async function deflateRaw(bytes) { if (typeof CompressionStream === 'undefined') return null; try { const cs = new CompressionStream('deflate-raw'); const stream = new Blob([bytes]).stream().pipeThrough(cs); return new Uint8Array(await new Response(stream).arrayBuffer()); } catch (e) { return null; } }
+async function makeZip(files) {
+  const enc = new TextEncoder(); const locals = []; const centrals = []; let offset = 0; const now = new Date();
+  const dosTime = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1)) & 0xFFFF;
+  const dosDate = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate()) & 0xFFFF;
+  for (const f of files) {
+    const name = enc.encode(f.path); const data = typeof f.content === 'string' ? enc.encode(f.content) : f.content; const crc = crc32(data);
+    let comp = await deflateRaw(data); let method = 8;
+    if (!comp || comp.length >= data.length) { comp = data; method = 0; }
+    const lh = new Uint8Array([...u32(0x04034b50), ...u16(20), ...u16(0x0800), ...u16(method), ...u16(dosTime), ...u16(dosDate), ...u32(crc), ...u32(comp.length), ...u32(data.length), ...u16(name.length), ...u16(0)]);
+    locals.push(lh, name, comp);
+    const ch = new Uint8Array([...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0x0800), ...u16(method), ...u16(dosTime), ...u16(dosDate), ...u32(crc), ...u32(comp.length), ...u32(data.length), ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(offset)]);
+    centrals.push(ch, name); offset += lh.length + name.length + comp.length;
+  }
+  const cdStart = offset; const cdSize = centrals.reduce((s, p) => s + p.length, 0);
+  const eocd = new Uint8Array([...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(cdSize), ...u32(cdStart), ...u16(0)]);
+  return concat([...locals, ...centrals, eocd]);
+}
+
+/* ============ DEB BUILDER ============ */
+document.getElementById('debBtn').onclick = () => { document.getElementById('overlay').classList.add('show'); renderTree(); };
+document.getElementById('debClose').onclick = () => { document.getElementById('overlay').classList.remove('show'); };
+document.getElementById('addFile').onclick = () => { const p = prompt('Đường dẫn trong deb:', 'usr/share/nghiaxz/notes.txt'); if (!p) return; const c = prompt('Nội dung:', ''); if (c === null) return; state.debTree.push({ path: p.trim().replace(/^\.?\//, ''), type: 'text', content: c }); renderTree(); };
+document.getElementById('f_up').onchange = e => { const file = e.target.files[0]; if (!file) return; const r = new FileReader(); r.onload = () => { state.dylibBytes = new Uint8Array(r.result); sys('đã nạp dylib: ' + file.name); }; r.readAsArrayBuffer(file); };
+function renderTree() {
+  const tree = document.getElementById('tree'); tree.innerHTML = '';
+  if (!state.debTree.length) { tree.innerHTML = '<div class="hint">Chưa có file text nào.</div>'; return; }
+  state.debTree.forEach((f, i) => { const row = document.createElement('div'); row.className = 'trow'; const p = document.createElement('span'); p.className = 'p'; p.textContent = f.path; const sz = document.createElement('span'); sz.className = 'sz'; sz.textContent = f.content.length + ' B'; const badge = document.createElement('span'); badge.className = 'badge'; badge.textContent = f.type; const x = document.createElement('span'); x.className = 'x'; x.textContent = '✕'; x.onclick = () => { state.debTree.splice(i, 1); renderTree(); }; row.append(p, badge, sz, x); tree.appendChild(row); });
+}
+document.getElementById('buildBtn').onclick = async () => {
+  const dl = document.getElementById('deblog'); dl.innerHTML = ''; const dlog = (m, c) => { const d = document.createElement('div'); d.className = 'cl ' + (c || 'log'); d.textContent = m; dl.appendChild(d); dl.scrollTop = dl.scrollHeight; };
+  try {
+    const dylibName = document.getElementById('f_dylib').value.trim() || 'NghiaxzMenu'; const bundles = document.getElementById('f_bundle').value.split(',').map(s => s.trim()).filter(Boolean); const files = [];
+    if (!document.getElementById('f_pkg').value.trim()) { alert('Package không được để trống!'); return; }
+    state.debTree.filter(f => f.type === 'text').forEach(f => { files.push({ path: f.path.replace(/^\.?\//, ''), data: new TextEncoder().encode(f.content), mode: 420 }); });
+    const plist = '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n  <key>Filter</key>\n  <dict>\n    <key>Bundles</key>\n    <array>\n' + bundles.map(b => '      <string>' + b + '</string>').join('\n') + '\n    </array>\n  </dict>\n</dict>\n</plist>\n';
+    const libDir = 'Library/MobileSubstrate/DynamicLibraries/';
+    files.push({ path: libDir + dylibName + '.plist', data: new TextEncoder().encode(plist), mode: 420 });
+    if (state.dylibBytes) { files.push({ path: libDir + dylibName + '.dylib', data: state.dylibBytes, mode: 493 }); dlog('dylib: ' + (state.dylibBytes.length / 1024).toFixed(1) + ' KB', 'info'); }
+    let totalSize = 0; files.forEach(f => totalSize += f.data.length); const installedKb = Math.max(1, Math.ceil(totalSize / 1024));
+    const control = ['Package: ' + document.getElementById('f_pkg').value.trim(), 'Name: ' + document.getElementById('f_name').value.trim(), 'Version: ' + document.getElementById('f_ver').value.trim(), 'Architecture: ' + document.getElementById('f_arch').value.trim(), 'Description: ' + document.getElementById('f_desc').value.trim().replace(/\n/g, ' '), 'Maintainer: ' + document.getElementById('f_maint').value.trim(), 'Author: ' + document.getElementById('f_auth').value.trim(), 'Section: Tweaks', 'Depends: ' + document.getElementById('f_dep').value.trim(), 'Installed-Size: ' + installedKb, ''].join('\n');
+    const postinst = '#!/bin/sh\nkillall -9 SpringBoard 2>/dev/null\nexit 0\n';
+    const ctrlEntries = [{ path: './control', data: new TextEncoder().encode(control), mode: 420 }, { path: './postinst', data: new TextEncoder().encode(postinst), mode: 493 }];
+    const dirs = new Set(); files.forEach(f => { const parts = f.path.split('/'); for (let i = 1; i < parts.length; i++) dirs.add(parts.slice(0, i).join('/')); });
+    const dirEntries = Array.from(dirs).sort().map(d => ({ path: './' + d, dir: true, mode: 493 }));
+    const dataEntries = dirEntries.concat(files.map(f => ({ path: './' + f.path, data: f.data, mode: f.mode })));
+    dlog('building …');
+    const ctrlGz = await gzip(makeTar(ctrlEntries)); const dataGz = await gzip(makeTar(dataEntries));
+    const out = concat([new TextEncoder().encode('!<arch>\n'), arMember('debian-binary', new TextEncoder().encode('2.0\n')), arMember('control.tar.gz', ctrlGz), arMember('data.tar.gz', dataGz)]);
+    const blob = new Blob([out], { type: 'application/vnd.debian.binary-package' });
+    const name = document.getElementById('f_pkg').value.trim() + '_' + document.getElementById('f_ver').value.trim() + '_' + document.getElementById('f_arch').value.trim() + '.deb';
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000); dlog('XONG → ' + name, 'info');
+  } catch (err) { dlog('LỖI: ' + err.message, 'error'); }
+};
+
+/* ============ NEW PROJECT ============ */
+const isMenuType = v => v.type === 'menu' || v.type === 'darksword';
+const SCAFFOLD_TEMPLATES = {
+  Makefile: (v) => `ARCHS = arm64 arm64e
+TARGET = iphone:clang:latest:14.0
+include $(THEOS)/makefiles/common.mk
+TWEAK_NAME = ${v.proj}
+${v.proj}_FILES = Tweak.xm${isMenuType(v) ? ' Menu.mm ESP.mm Aimbot.mm' : ''}
+${v.proj}_CFLAGS = -fobjc-arc -std=c++17
+include $(THEOS_MAKE_PATH)/tweak.mk
+`,
+  control: (v) => `Package: ${v.pkg}
+Name: ${v.name}
+Version: ${v.ver}
+Architecture: iphoneos-arm64
+Description: ${v.desc}
+Maintainer: ${v.author}
+Author: ${v.author}
+Section: Tweaks
+Depends: mobilesubstrate
+`,
+  'Tweak.xm': (v) => isMenuType(v) ? `#import <UIKit/UIKit.h>\n#import "Menu.h"\n%ctor { @autoreleasepool { dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ UIWindow* kw = UIApplication.sharedApplication.keyWindow; if (!kw) return; UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:[NghiaxzWindow class] action:@selector(shared)]; tap.numberOfTapsRequired = 3; [kw addGestureRecognizer:tap]; }); } }\n%hook UIViewController\n- (void)viewDidAppear:(BOOL)animated { %orig; [[NghiaxzWindow shared] setHidden:NO]; }\n%end` : `#import <UIKit/UIKit.h>\n%hook SpringBoard\n- (void)applicationDidFinishLaunching:(id)application { %orig; NSLog(@"[${v.proj}] loaded"); }\n%end`,
+  'Menu.h': (v) => isMenuType(v) ? `#import <UIKit/UIKit.h>\n#include <atomic>\nstruct Settings { std::atomic<bool> esp{false}; std::atomic<bool> espBox{true}; std::atomic<bool> espName{true}; std::atomic<bool> espHealth{true}; std::atomic<bool> espDistance{true}; std::atomic<bool> aimbot{false}; std::atomic<float> aimFov{120.f}; };\nextern Settings g_Settings;\n@interface NghiaxzWindow : UIWindow\n+ (instancetype)shared;\n- (void)toggle;\n@end` : '',
+  'Menu.mm': (v) => isMenuType(v) ? `#import "Menu.h"\nSettings g_Settings;\nstatic NghiaxzWindow* g_Win = nil;\n@implementation NghiaxzWindow\n+ (instancetype)shared { static dispatch_once_t once; dispatch_once(&once, ^{ g_Win = [[NghiaxzWindow alloc] initWithFrame:[UIScreen mainScreen].bounds]; g_Win.windowLevel = UIWindowLevelAlert + 100; g_Win.backgroundColor = [UIColor clearColor]; g_Win.hidden = YES; [g_Win buildUI]; }); return g_Win; }\n- (void)toggle { self.hidden = !self.hidden; }\n- (void)buildUI { UIView* p = [[UIView alloc] initWithFrame:CGRectMake(20, 80, 300, 520)]; p.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.9]; p.layer.cornerRadius = 14; p.layer.borderWidth = 1; p.layer.borderColor = [UIColor cyanColor].CGColor; [self addSubview:p]; UILabel* t = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, 300, 30)]; t.text = @"NGHIAXZ.DEV"; t.textColor = [UIColor cyanColor]; t.font = [UIFont boldSystemFontOfSize:18]; t.textAlignment = NSTextAlignmentCenter; [p addSubview:t]; }\n@end` : '',
+  'ESP.mm': (v) => isMenuType(v) ? `#import <UIKit/UIKit.h>\n// ESP logic here` : '',
+  'Aimbot.mm': (v) => isMenuType(v) ? `#import <UIKit/UIKit.h>\n// Aimbot logic here` : '',
+  'Offsets.h': (v) => `#pragma once\n#include <cstdint>\nnamespace Offsets {\n    constexpr uintptr_t Camera_main = 0x0;\n}`,
+  plist: (v) => `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n  <key>Filter</key>\n  <dict>\n    <key>Bundles</key>\n    <array>\n${v.bundle.split(',').map(b => '      <string>' + b.trim() + '</string>').join('\n')}\n    </array>\n  </dict>\n</dict>\n</plist>`,
+  'README.md': (v) => `# ${v.name}\nBuild: make package FINALPACKAGE=1`
+};
+document.getElementById('scafBtn').onclick = () => { document.getElementById('scafOverlay').classList.add('show'); renderScafFiles(genScaffold().files); };
+document.getElementById('scafClose').onclick = () => { document.getElementById('scafOverlay').classList.remove('show'); };
+function genScaffold() {
+  const v = { proj: document.getElementById('s_proj').value.trim() || 'NghiaxzTweak', pkg: document.getElementById('s_pkg').value.trim() || 'com.nghiaxz.tweak', name: document.getElementById('s_name').value.trim() || 'nghiaxz dev Tweak', author: document.getElementById('s_author').value.trim() || 'nghiaxz dev', ver: document.getElementById('s_ver').value.trim() || '1.0.0', bundle: document.getElementById('s_bundle').value.trim() || 'com.apple.springboard', type: document.getElementById('s_type').value, desc: document.getElementById('s_desc').value.trim() || 'nghiaxz dev — Tweak iOS' };
+  const files = []; Object.keys(SCAFFOLD_TEMPLATES).forEach(k => { const content = SCAFFOLD_TEMPLATES[k](v); if (!content) return; let path = k; if (k === 'plist') path = v.proj + '.plist'; if (k === 'control') path = 'layout/DEBIAN/control'; files.push({ path: v.proj + '/' + path, content }); });
+  return { v, files };
+}
+function renderScafFiles(files) {
+  const el = document.getElementById('scafFiles'); el.innerHTML = '';
+  files.forEach(f => { const row = document.createElement('div'); row.className = 'scafRow'; const ico = document.createElement('span'); ico.className = 'ico'; ico.textContent = '📄'; const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = f.path; const sz = document.createElement('span'); sz.className = 'sz'; sz.textContent = f.content.length + ' B'; row.append(ico, nm, sz); el.appendChild(row); });
+}
+document.getElementById('scafBuild').onclick = async () => {
+  const dl = document.getElementById('scafLog'); dl.innerHTML = ''; const dlog = (m, c) => { const d = document.createElement('div'); d.className = 'cl ' + (c || 'log'); d.textContent = m; dl.appendChild(d); dl.scrollTop = dl.scrollHeight; };
+  const { v, files } = genScaffold(); 
+  if(!v.proj || !v.pkg) { alert('Tên project và Package ID không được để trống!'); return; }
+  dlog('sinh ' + files.length + ' file …'); const zip = await makeZip(files);
+  const blob = new Blob([zip], { type: 'application/zip' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = v.proj + '.zip'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000); dlog('XONG → ' + v.proj + '.zip', 'info');
+};
+
+/* ============ OFFSET DIFF ============ */
+const diffState = { old: null, new: null, oldName: '', newName: '', rows: [], filter: '' };
+function parseOffsets(text) {
+  const map = {}; const lines = text.split('\n'); let curClass = '';
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]; const cm = line.match(/^\s*(?:public|private|internal|protected)?\s*(?:sealed\s+|abstract\s+)?(?:class|struct|interface)\s+([A-Za-z_]\w*)/);
+    if (cm) { curClass = cm[1]; continue; }
+    const rvaMatch = line.match(/\/\/\s*RVA:\s*(0x[0-9A-Fa-f]+)/);
+    if (rvaMatch && curClass) { for (let j = i + 1; j < Math.min(i + 4, lines.length); j++) { const sig = lines[j]; const mm = sig.match(/([A-Za-z_]\w*)\s*\(/); if (mm && !sig.trim().startsWith('//')) { const key = curClass + '::' + mm[1]; map[key] = rvaMatch[1].toLowerCase(); break; } } }
+  }
+  const re2 = /([A-Za-z_][\w\.:]*(?:\.[\w]+)*)\s*[:=]\s*(0x[0-9A-Fa-f]+)/g; let m; while ((m = re2.exec(text))) { const key = m[1]; if (!map[key]) map[key] = m[2].toLowerCase(); }
+  const re3 = /^\s*([A-Za-z_][\w\.:]{2,})\s+(?:0x)?([0-9A-Fa-f]{4,16})\s*$/gm; while ((m = re3.exec(text))) { const key = m[1]; if (!map[key]) map[key] = '0x' + m[2].toLowerCase(); }
+  return map;
+}
+document.getElementById('oldFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { diffState.old = parseOffsets(r.result); diffState.oldName = f.name; document.getElementById('upOldF').textContent = f.name + ' (' + Object.keys(diffState.old).length + ')'; document.getElementById('upOld').classList.add('done'); }; r.readAsText(f); };
+document.getElementById('newFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { diffState.new = parseOffsets(r.result); diffState.newName = f.name; document.getElementById('upNewF').textContent = f.name + ' (' + Object.keys(diffState.new).length + ')'; document.getElementById('upNew').classList.add('done'); }; r.readAsText(f); };
+document.getElementById('diffRun').onclick = () => { if (!diffState.old || !diffState.new) { alert('Cần cả 2 file.'); return; } const oldMap = diffState.old, newMap = diffState.new; const allKeys = new Set([...Object.keys(oldMap), ...Object.keys(newMap)]); const rows = []; let add = 0, del = 0, chg = 0, same = 0; for (const k of allKeys) { const o = oldMap[k], n = newMap[k]; if (o && n) { if (o === n) { rows.push({ key: k, old: o, new: n, delta: '0', kind: 'same' }); same++; } else { const d = parseInt(n, 16) - parseInt(o, 16); rows.push({ key: k, old: o, new: n, delta: (d >= 0 ? '+' : '') + '0x' + Math.abs(d).toString(16), kind: 'chg' }); chg++; } } else if (n && !o) { rows.push({ key: k, old: '—', new: n, delta: 'NEW', kind: 'add' }); add++; } else { rows.push({ key: k, old: o, new: '—', delta: 'REMOVED', kind: 'del' }); del++; } } rows.sort((a, b) => a.key.localeCompare(b.key)); diffState.rows = rows; document.getElementById('stAdd').textContent = add; document.getElementById('stDel').textContent = del; document.getElementById('stChg').textContent = chg; document.getElementById('stSame').textContent = same; renderDiffTable(); };
+document.getElementById('diffFilter').addEventListener('input', e => { diffState.filter = e.target.value; renderDiffTable(); });
+document.getElementById('diffBtn').onclick = () => { document.getElementById('diffOverlay').classList.add('show'); };
+document.getElementById('diffClose').onclick = () => { document.getElementById('diffOverlay').classList.remove('show'); };
+function renderDiffTable() {
+  const tbody = document.getElementById('diffTbody'); tbody.innerHTML = ''; const f = diffState.filter.toLowerCase();
+  const visible = diffState.rows.filter(r => !f || r.key.toLowerCase().includes(f) || (r.kind === 'chg' && !f));
+  visible.forEach(r => { const tr = document.createElement('tr'); tr.className = r.kind; tr.innerHTML = `<td class="k">${r.key}</td><td class="o">${r.old}</td><td class="n">${r.new}</td><td class="d">${r.delta}</td>`; tbody.appendChild(tr); });
+}
+document.getElementById('diffExportH').onclick = () => { const changed = diffState.rows.filter(r => r.kind === 'chg' || r.kind === 'add'); if (!changed.length) { alert('Không có thay đổi.'); return; } const lines = ['#pragma once', '#include <cstdint>', '', 'namespace Offsets {']; const maxLen = changed.reduce((m, r) => Math.max(m, r.key.length), 10); changed.forEach(r => { const safe = r.key.replace(/::/g, '_').replace(/[^\w]/g, '_'); lines.push('    constexpr uintptr_t ' + safe.padEnd(maxLen + 2, ' ') + ' = ' + r.new + ';'); }); lines.push('}'); const blob = new Blob([lines.join('\n')], { type: 'text/plain' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Offsets_new.h'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+
+/* ============ KEY GRAB ============ */
+const kgState = { bytes: null, strings: [], data: { url: [], auth: [], key: [], uuid: [], hook: [] }, activeCat: 'url' };
+function extractStrings(bytes, minLen) { const out = []; let cur = []; for (let i = 0; i < bytes.length; i++) { const b = bytes[i]; if (b >= 32 && b < 127) cur.push(b); else { if (cur.length >= minLen) out.push(String.fromCharCode.apply(null, cur)); cur = []; } } if (cur.length >= minLen) out.push(String.fromCharCode.apply(null, cur)); return out; }
+function classifyKg(strings) {
+  const urlKw = ['http://', 'https://', 'ws://', 'wss://', 'api.', '.com/', '.net/', '.io/', '.gg/', '.dev/']; const authKw = ['license', 'licence', 'auth', 'token', 'secret', 'expire', 'valid', 'verify', 'login', 'sign', 'hmac', 'hwid', 'deviceid', 'serial', 'activation', 'subscription', 'premium', 'vip', 'trial', 'banned', 'block']; const keyPhr = ['key', 'api_key', 'apikey', 'access_key', 'secret_key', 'public_key', 'bearer'];
+  const urls = new Set(), auths = new Set(), keys = new Set(), uuids = new Set(), hookCandidates = new Set(); const authFuncNames = /^(verify|isValid|isPremium|checkLicense|validate|checkAuth|isAuthenticated|hasAccess|isActivated|checkKey|authUser)/i;
+  for (const s of strings) { const low = s.toLowerCase(); if (urlKw.some(k => low.includes(k)) && s.length < 300) urls.add(s); if (authKw.some(k => low.includes(k))) { auths.add(s); } if (keyPhr.some(k => low.includes(k))) keys.add(s); if (/^[A-Za-z0-9+/=]{24,}$/.test(s) && s.length < 200) keys.add(s); if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s)) uuids.add(s); if (authFuncNames.test(s) && /^[A-Za-z_]\w+$/.test(s)) hookCandidates.add(s); }
+  const hooks = []; hookCandidates.forEach(fn => { hooks.push(`%hook LicenseManager`); hooks.push(`- (BOOL)${fn} { return YES; }`); hooks.push(`%end\n`); });
+  return { url: [...urls].sort(), auth: [...auths].sort(), key: [...keys].sort(), uuid: [...uuids].sort(), hook: hooks };
+}
+document.getElementById('kgFile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { kgState.bytes = new Uint8Array(r.result); document.getElementById('kgSize').textContent = (kgState.bytes.length / 1024).toFixed(1) + ' KB'; kgState.strings = extractStrings(kgState.bytes, 6); kgState.data = classifyKg(kgState.strings); kgStats(); renderKgList(); sys('Key Grab: ' + f.name + ' done.'); }; r.readAsArrayBuffer(f); };
+document.getElementById('kgdrop').onclick = () => document.getElementById('kgFile').click();
+document.getElementById('kgdrop').addEventListener('dragover', e => { e.preventDefault(); document.getElementById('kgdrop').classList.add('over'); });
+document.getElementById('kgdrop').addEventListener('dragleave', () => document.getElementById('kgdrop').classList.remove('over'));
+document.getElementById('kgdrop').addEventListener('drop', e => { e.preventDefault(); document.getElementById('kgdrop').classList.remove('over'); const file = e.dataTransfer.files[0]; if (!file) return; const inp = document.getElementById('kgFile'); const dt = new DataTransfer(); dt.items.add(file); inp.files = dt.files; inp.dispatchEvent(new Event('change')); });
+document.querySelectorAll('.kgtab').forEach(t => { t.onclick = () => { document.querySelectorAll('.kgtab').forEach(x => x.classList.remove('on')); t.classList.add('on'); kgState.activeCat = t.dataset.cat; renderKgList(); }; });
+function kgStats() { document.getElementById('kgTotal').textContent = kgState.strings.length; document.getElementById('kgUrlN').textContent = kgState.data.url.length; document.getElementById('kgAuthN').textContent = kgState.data.auth.length; document.getElementById('kgHookN').textContent = kgState.data.hook.length; document.getElementById('cntUrl').textContent = kgState.data.url.length; document.getElementById('cntAuth').textContent = kgState.data.auth.length; document.getElementById('cntKey').textContent = kgState.data.key.length; document.getElementById('cntUuid').textContent = kgState.data.uuid.length; document.getElementById('cntHook').textContent = kgState.data.hook.length; }
+function renderKgList() { const el = document.getElementById('kglist'); el.innerHTML = ''; const cat = kgState.activeCat; const items = kgState.data[cat] || []; if (!items.length) { el.innerHTML = '<div class="hint" style="padding:20px;text-align:center">Không có dữ liệu. Upload .dylib.</div>'; return; } if (cat === 'hook') { const ta = document.createElement('textarea'); ta.className = 'kghook'; ta.value = items.join('\n'); el.appendChild(ta); return; } items.forEach((s, i) => { const row = document.createElement('div'); row.className = 'kgrow' + (cat === 'auth' && /expire|banned|block|invalid/i.test(s) ? ' crit' : ''); const v = document.createElement('div'); v.className = 'v'; v.textContent = s; const cp = document.createElement('span'); cp.className = 'cp'; cp.textContent = 'copy'; cp.onclick = () => { navigator.clipboard.writeText(s).then(() => { cp.textContent = '✓'; setTimeout(() => cp.textContent = 'copy', 800); }); }; row.append(v, cp); el.appendChild(row); }); }
+document.getElementById('kgBtn').onclick = () => { document.getElementById('kgOverlay').classList.add('show'); };
+document.getElementById('kgClose').onclick = () => { document.getElementById('kgOverlay').classList.remove('show'); };
+document.getElementById('kgCopyAll').onclick = () => { const items = kgState.data[kgState.activeCat] || []; if (!items.length) return; navigator.clipboard.writeText(items.join('\n')).then(() => sys('Đã copy ' + items.length + ' dòng')); };
+document.getElementById('kgCopyHook').onclick = () => { if (!kgState.data.hook.length) { alert('Chưa có hook template.'); return; } navigator.clipboard.writeText(kgState.data.hook.join('\n')).then(() => sys('Đã copy hook')); };
+
+/* INIT */
+editor.value = state.files[state.active];
+renderTabs();
+sys('nghiaxz dev DevKit. Đã thêm nút Xoá / Dán / Sao chép cho Editor.');
+</script>
+</body>
+</html>
