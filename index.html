@@ -3,28 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>nghiaxz dev — DevKit (Protected)</title>
+<title>nghiaxz dev — DevKit</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2129;--line:#2b313a;--txt:#d7dde5;--dim:#7d8894;--acc:#5ce39a;--acc2:#4aa8ff;--red:#ff6b6b;--yel:#ffc85c;--pur:#a78bfa}
 html,body{height:100%}
 body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;display:flex;flex-direction:column;overflow:hidden}
 
-/* ================= LOGIN SCREEN ================= */
-#login-screen{position:fixed;inset:0;background:#07090c;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background-image:radial-gradient(circle at 50% 0%,rgba(92,227,154,.15),transparent 60%);transition:opacity .3s ease}
-#login-screen.hide{opacity:0;pointer-events:none}
-.login-box{background:var(--panel);border:1px solid var(--line);padding:30px;border-radius:12px;width:100%;max-width:320px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.login-box h2{color:var(--acc);font-size:20px;margin-bottom:8px;letter-spacing:1px}
-.login-box p{color:var(--dim);font-size:12px;margin-bottom:20px}
-.login-box input{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--txt);padding:12px;border-radius:8px;font:inherit;text-align:center;font-size:18px;letter-spacing:5px;outline:none;margin-bottom:15px;transition:.2s}
-.login-box input:focus{border-color:var(--acc)}
-.login-box button{width:100%;background:var(--acc);color:#08110c;border:none;padding:12px;border-radius:8px;font-weight:bold;font-size:14px;cursor:pointer;transition:.2s}
-.login-box button:hover{background:#4ade80}
-#login-err{color:var(--red);font-size:12px;margin-bottom:15px;display:none;animation:shake .3s ease-in-out}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-/* ================================================= */
-
-/* TOP BAR */
 #top{height:46px;display:flex;align-items:center;gap:8px;padding:0 14px;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;position:relative;z-index:100}
 #brand{font-weight:700;color:var(--acc);letter-spacing:.5px}
 #brand span{color:var(--dim);font-weight:400}
@@ -35,7 +20,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 .btn.blue:hover{border-color:var(--acc2);color:var(--acc2)}
 .btn.red:hover{border-color:var(--red);color:var(--red)}
 
-/* DROPDOWN */
 .dropdown{position:relative;display:inline-block}
 .dropdown-content{display:none;position:absolute;right:0;top:38px;background:var(--panel2);min-width:190px;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;flex-direction:column}
 .dropdown-content.show{display:flex}
@@ -43,7 +27,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 .dropdown-content a:hover{background:var(--line);color:var(--acc)}
 .dropdown-content hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 
-/* MAIN LAYOUT */
 #main{flex:1;display:flex;min-height:0}
 #left{width:50%;display:flex;flex-direction:column;border-right:1px solid var(--line);min-width:0}
 #tabs{display:flex;gap:2px;padding:6px 6px 0;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;flex:0 0 auto}
@@ -51,7 +34,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 .tab:hover{color:var(--txt)}
 .tab.on{background:var(--bg);color:var(--acc);border-color:var(--line)}
 
-/* EDITOR TOOLBAR */
 #editor-tools{display:flex;gap:8px;padding:6px 10px;background:var(--panel2);border-bottom:1px solid var(--line);flex:0 0 auto}
 #editor-tools .btn{padding:4px 10px;font-size:11px}
 
@@ -64,7 +46,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 .cl{white-space:pre-wrap;word-break:break-word}
 .cl.log{color:#a9b4c0}.cl.info{color:var(--acc2)}.cl.warn{color:var(--yel)}.cl.error{color:var(--red)}.cl.sys{color:var(--acc);opacity:.8}
 
-/* MOBILE RESPONSIVE */
 @media(max-width:768px){
   #main{flex-direction:column}
   #left{width:100%;height:45%;border-right:none;border-bottom:1px solid var(--line)}
@@ -73,7 +54,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
   #editor-tools{flex-wrap:wrap}
 }
 
-/* MODALS */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:999;padding:16px}
 .modal.show{display:flex}
 .mbox{width:100%;max-width:1120px;height:100%;max-height:760px;background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)}
@@ -89,7 +69,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 .hint{color:var(--dim);font-size:11px;line-height:1.6;margin-top:6px}
 .mlog{height:110px;border-top:1px solid var(--line);background:#07090c;padding:8px 12px;overflow:auto;font-size:12px;line-height:1.5;flex:0 0 auto}
 
-/* SPECIFIC MODAL BODIES */
 #debform{width:100%;padding:14px;overflow:auto;flex:0 0 auto;border-bottom:1px solid var(--line)}
 #debfiles{flex:1;padding:14px;overflow:auto;display:flex;flex-direction:column;gap:10px}
 #tree{display:flex;flex-direction:column;gap:6px}
@@ -106,7 +85,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 .scafRow .nm{flex:1}
 .scafRow .sz{color:var(--dim);font-size:11px}
 
-/* DIFF UI */
 #diffuploads{display:flex;gap:14px;padding:14px;border-bottom:1px solid var(--line);flex:0 0 auto;flex-wrap:wrap}
 .upbox{flex:1;min-width:200px;background:var(--panel2);border:1px dashed var(--line);border-radius:8px;padding:12px;text-align:center;cursor:pointer;position:relative}
 .upbox:hover{border-color:var(--acc)}
@@ -114,12 +92,8 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 .upbox .t{color:var(--dim);font-size:11px;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
 .upbox .f{color:var(--txt);font-size:12px;word-break:break-all}
 .upbox input{display:none}
-.upbox .demo-btn {
-  position: absolute; bottom: 5px; right: 5px; font-size: 9px; background: var(--bg);
-  border: 1px solid var(--line); color: var(--dim); padding: 2px 6px; border-radius: 4px;
-  cursor: pointer; z-index: 10;
-}
-.upbox .demo-btn:hover { color: var(--acc); border-color: var(--acc); }
+.upbox .demo-btn{position:absolute;bottom:5px;right:5px;font-size:9px;background:var(--bg);border:1px solid var(--line);color:var(--dim);padding:2px 6px;border-radius:4px;cursor:pointer;z-index:10}
+.upbox .demo-btn:hover{color:var(--acc);border-color:var(--acc)}
 #diffstats{padding:8px 14px;background:var(--panel2);border-bottom:1px solid var(--line);font-size:12px;display:flex;gap:16px;flex-wrap:wrap}
 #diffstats .s{color:var(--dim)}
 #diffstats .s b{color:var(--acc)}
@@ -143,17 +117,16 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 #difftable tr.del{background:rgba(255,107,107,.04)}
 #difftable tr.chg{background:rgba(255,200,92,.04)}
 
-/* KEYGRAB UI */
 #kgup{padding:14px;border-bottom:1px solid var(--line);flex:0 0 auto}
 #kgdrop{background:var(--panel2);border:2px dashed var(--line);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:.15s}
 #kgdrop:hover,#kgdrop.over{border-color:var(--acc);background:rgba(92,227,154,.05)}
 #kgdrop .i{font-size:32px;margin-bottom:8px;color:var(--acc)}
 #kgdrop .t{color:var(--txt);font-size:13px}
 #kgdrop .s{color:var(--dim);font-size:11px;margin-top:4px}
-#kgstats{padding:8px 14px;background:var(--panel2);border-bottom:1px solid var(--line);font-size:12px;display:flex;gap:16px;flex-wrap:wrap}
-#kgstats .s b{color:var(--acc)}
-#kgtabs{display:flex;gap:2px;padding:6px 14px 0;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;overflow-x:auto}
-.kgtab{padding:6px 12px;border-radius:7px 7px 0 0;cursor:pointer;font-size:11px;color:var(--dim);border:1px solid transparent;border-bottom:none;white-space:nowrap}
+#kgstats{padding:118px 14px;background:var(--px;panel2);border-bottomcolor:1px solid var(--line);font-size:12px;:display:flex;gap:var16px;flex-wrap(--:wrap}
+#kgdimstats .s b{);color:var(--accborder)}
+#kgtabs{display:flex;gap::2px;padding:6px 14px 0;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;overflow-x:auto}
+.kgtab{padding:6px 12px;border-radius:7px 7px 0 0;cursor:pointer;font-size:1px solid transparent;border-bottom:none;white-space:nowrap}
 .kgtab:hover{color:var(--txt)}
 .kgtab.on{background:var(--bg);color:var(--acc);border-color:var(--line)}
 .kgtab .cnt{display:inline-block;background:#2b313a;color:var(--dim);padding:0 5px;border-radius:8px;font-size:10px;margin-left:4px}
@@ -169,16 +142,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 </style>
 </head>
 <body>
-
-<div id="login-screen">
-  <div class="login-box">
-    <h2>NGHIAXZ.DEV</h2>
-    <p>Nhập mật khẩu để truy cập DevKit</p>
-    <div id="login-err">Sai mật khẩu!</div>
-    <input type="password" id="pass-input" placeholder="••••" autocomplete="off">
-    <button id="login-btn">Đăng Nhập</button>
-  </div>
-</div>
 
 <div id="top">
   <div id="brand">nghiaxz dev<span>.devkit</span></div>
@@ -221,7 +184,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 
 <div id="console"></div>
 
-<!-- MODAL: BUILD DEB -->
 <div id="overlay" class="modal">
   <div class="mbox">
     <div class="mhead"><b>nghiaxz dev — Deb Builder</b><div class="spacer"></div><button class="btn" id="debClose">Đóng</button></div>
@@ -250,7 +212,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
   </div>
 </div>
 
-<!-- MODAL: NEW PROJECT -->
 <div id="scafOverlay" class="modal">
   <div class="mbox">
     <div class="mhead"><b>New Project (Theos)</b><div class="spacer"></div><button class="btn" id="scafClose">Đóng</button></div>
@@ -278,7 +239,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
   </div>
 </div>
 
-<!-- MODAL: DIFF -->
 <div id="diffOverlay" class="modal">
   <div class="mbox">
     <div class="mhead"><b>Offset Diff</b><div class="spacer"></div><button class="btn" id="diffClose">Đóng</button></div>
@@ -313,7 +273,6 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
   </div>
 </div>
 
-<!-- MODAL: KEYGRAB -->
 <div id="kgOverlay" class="modal">
   <div class="mbox">
     <div class="mhead"><b>Key Grab (Dump dylib)</b><div class="spacer"></div><button class="btn" id="kgClose">Đóng</button></div>
@@ -347,51 +306,15 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,"SF Mono",Me
 </div>
 
 <script>
-/* ================= SECURITY & LOGIN ================= */
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('keydown', e => {
-  if (e.key === 'F12' || 
-      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
+  if (e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
       (e.ctrlKey && e.key === 'U')) {
     e.preventDefault();
   }
 });
 
-const loginScreen = document.getElementById('login-screen');
-const passInput = document.getElementById('pass-input');
-const loginBtn = document.getElementById('login-btn');
-const loginErr = document.getElementById('login-err');
-
-const SECURE_PASS = [56, 57, 48, 54].map(c => String.fromCharCode(c)).join('');
-
-function checkAuth() {
-  if (sessionStorage.getItem('nghiaxz_auth') === '1') {
-    loginScreen.classList.add('hide');
-    setTimeout(() => { loginScreen.style.display = 'none'; buildPreview(); }, 300);
-  }
-}
-
-loginBtn.onclick = () => {
-  if (passInput.value === SECURE_PASS) {
-    sessionStorage.setItem('nghiaxz_auth', '1');
-    checkAuth();
-  } else {
-    loginErr.style.display = 'block';
-    passInput.value = '';
-    passInput.focus();
-    const box = document.querySelector('.login-box');
-    box.style.transform = 'translateX(-5px)';
-    setTimeout(() => box.style.transform = 'translateX(5px)', 50);
-    setTimeout(() => box.style.transform = 'translateX(-5px)', 100);
-    setTimeout(() => box.style.transform = 'translateX(0)', 150);
-  }
-};
-
-passInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') loginBtn.click();
-});
-
-/* ================= STATE & UI ================= */
 const state = {
   active: 'index.html',
   preview: 'web',
@@ -507,7 +430,6 @@ document.getElementById('btnCopyCode').onclick = async () => {
   } catch (err) { alert('Không thể sao chép. Vui lòng bôi đen và Ctrl+C / Cmd+C.'); }
 };
 
-/* ================= PREVIEW ================= */
 const HOOK = `<script>(function(){
 const send=(t,a)=>parent.postMessage({__nghiaxz:true,t,a:Array.from(a).map(x=>{try{return typeof x==="object"?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(" ")}, "*");
 ["log","warn","error","info"].forEach(k=>{const o=console[k].bind(console);console[k]=(...a)=>{send(k,a);o(...a)}});
@@ -543,7 +465,6 @@ document.getElementById('runBtn').onclick = () => { state.preview = 'web'; sys('
 document.getElementById('clrBtn').onclick = () => { consoleEl.innerHTML = ''; };
 document.getElementById('relBtn').onclick = buildPreview;
 
-/* UTILS */
 function concat(chunks) { let total = 0; chunks.forEach(c => total += c.length); const out = new Uint8Array(total); let off = 0; chunks.forEach(c => { out.set(c, off); off += c.length; }); return out; }
 function oct(n, len) { let s = Math.floor(n).toString(8); if (s.length > len - 1) s = s.slice(s.length - (len - 1)); return s.padStart(len - 1, '0') + '\0'; }
 function tarHeader(name, size, type, mode) {
@@ -583,7 +504,6 @@ async function makeZip(files) {
   return concat([...locals, ...centrals, eocd]);
 }
 
-/* ============ DEB BUILDER ============ */
 document.getElementById('debBtn').onclick = () => { document.getElementById('overlay').classList.add('show'); renderTree(); };
 document.getElementById('debClose').onclick = () => { document.getElementById('overlay').classList.remove('show'); };
 document.getElementById('addFile').onclick = () => { const p = prompt('Đường dẫn trong deb:', 'usr/share/nghiaxz/notes.txt'); if (!p) return; const c = prompt('Nội dung:', ''); if (c === null) return; state.debTree.push({ path: p.trim().replace(/^\.?\//, ''), type: 'text', content: c }); renderTree(); };
@@ -620,7 +540,6 @@ document.getElementById('buildBtn').onclick = async () => {
   } catch (err) { dlog('LỖI: ' + err.message, 'error'); }
 };
 
-/* ============ NEW PROJECT ============ */
 const isMenuType = v => v.type === 'menu' || v.type === 'darksword';
 const SCAFFOLD_TEMPLATES = {
   Makefile: (v) => `ARCHS = arm64 arm64e
@@ -663,43 +582,32 @@ function renderScafFiles(files) {
 }
 document.getElementById('scafBuild').onclick = async () => {
   const dl = document.getElementById('scafLog'); dl.innerHTML = ''; const dlog = (m, c) => { const d = document.createElement('div'); d.className = 'cl ' + (c || 'log'); d.textContent = m; dl.appendChild(d); dl.scrollTop = dl.scrollHeight; };
-  const { v, files } = genScaffold(); 
-  if(!v.proj || !v.pkg) { alert('Tên project và Package ID không được để trống!'); return; }
+  const { v, files } = genScaffold();
+  if (!v.proj || !v.pkg) { alert('Tên project và Package ID không được để trống!'); return; }
   dlog('sinh ' + files.length + ' file …'); const zip = await makeZip(files);
   const blob = new Blob([zip], { type: 'application/zip' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = v.proj + '.zip'; a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000); dlog('XONG → ' + v.proj + '.zip', 'info');
 };
 
-/* ============ OFFSET DIFF ============ */
 const diffState = { old: null, new: null, oldName: '', newName: '', rows: [], filter: '' };
 
-// Parser đa năng: đọc được dump.cs chuẩn, dạng Tên = 0x..., dạng bảng
 function parseOffsets(text) {
   const map = {};
   if (!text || text.trim() === '') return map;
-
-  // Chuẩn hoá line endings và xoá BOM
   const cleanText = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
   const lines = cleanText.split('\n');
   let curClass = '';
-
   for (let i = 0; i < lines.length; i++) {
     const raw = lines[i];
     const line = raw.trim();
     if (!line) continue;
-
-    // Class/Struct/Interface detection
     const cm = line.match(/\b(?:class|struct|interface)\s+([A-Za-z_]\w*)/);
     if (cm && !line.startsWith('//')) { curClass = cm[1]; continue; }
-
-    // RVA line (có hoặc không có //, chữ hoa/thường)
     const rvaMatch = line.match(/RVA:\s*(0x[0-9a-fA-F]+)/i);
     if (rvaMatch && curClass) {
-      // Tìm tên method trong 8 dòng tiếp theo
       for (let j = i + 1; j < Math.min(i + 9, lines.length); j++) {
         const sig = lines[j].trim();
         if (!sig || sig.startsWith('//')) continue;
-        // Bắt tên trước dấu (
         const mm = sig.match(/([A-Za-z_]\w*)\s*\(/);
         if (mm) {
           const key = curClass + '::' + mm[1];
@@ -709,20 +617,15 @@ function parseOffsets(text) {
       }
     }
   }
-
-  // Fallback 1: Tên = 0x... hoặc Tên: 0x...
   const re2 = /([A-Za-z_][\w\.:]*)\s*[:=]\s*(0x[0-9a-fA-F]+)/gi;
   let m;
   while ((m = re2.exec(cleanText))) {
     if (!map[m[1]]) map[m[1]] = m[2].toLowerCase();
   }
-
-  // Fallback 2: Bảng dạng "Tên <khoảng trắng> hex"
   const re3 = /^\s*([A-Za-z_][\w\.:]{2,})\s+(?:0x)?([0-9A-Fa-f]{5,16})\s*$/gm;
   while ((m = re3.exec(cleanText))) {
     if (!map[m[1]]) map[m[1]] = '0x' + m[2].toLowerCase();
   }
-
   return map;
 }
 
@@ -757,7 +660,6 @@ function loadFileInto(side, file) {
 document.getElementById('oldFile').onchange = e => loadFileInto('old', e.target.files[0]);
 document.getElementById('newFile').onchange = e => loadFileInto('new', e.target.files[0]);
 
-// Dữ liệu mẫu để test
 const DEMO_OLD = `// Namespace: 
 public class Player // TypeDefIndex: 1234
 {
@@ -821,7 +723,7 @@ window.loadDemoFile = (side) => {
 };
 
 document.getElementById('diffRun').onclick = () => {
-  if (! =diffState.old || !diffState.new) { alert('Cần chọn đủ 2 file!'); return; }
+  if (!diffState.old || !diffState.new) { alert('Cần chọn đủ 2 file!'); return; }
   const oldMap = diffState.old, newMap = diffState.new;
   const allKeys = new Set([...Object.keys(oldMap), ...Object.keys(newMap)]);
   const rows = [];
@@ -856,9 +758,18 @@ function renderDiffTable() {
   const visible = diffState.rows.filter(r => !f || r.key.toLowerCase().includes(f));
   visible.forEach(r => { const tr = document.createElement('tr'); tr.className = r.kind; tr.innerHTML = `<td class="k">${r.key}</td><td class="o">${r.old}</td><td class="n">${r.new}</td><td class="d">${r.delta}</td>`; tbody.appendChild(tr); });
 }
-document.getElementById('diffExportH').onclick = () => { const changed = diffState.rows.filter(r => r.kind === 'chg' || r.kind === 'add'); if (!changed.length) { alert('Không có thay đổi.'); return; } const lines = ['#pragma once', '#include <cstdint>', '', 'namespace Offsets {']; const maxLen = changed.reduce((m, r) => Math.max(m, r.key.length), 10); changed.forEach(r => { const safe = r.key.replace(/::/g, '_').replace(/[^\w]/g, '_'); lines.push('    constexpr uintptr_t ' + safe.padEnd(maxLen + 2, ' ') + ' = ' + r.new + ';'); }); lines.push('}'); const blob = new Blob([lines.join('\n')], { type: 'text/plain' }); const a document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Offsets_new.h'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+document.getElementById('diffExportH').onclick = () => {
+  const changed = diffState.rows.filter(r => r.kind === 'chg' || r.kind === 'add');
+  if (!changed.length) { alert('Không có thay đổi.'); return; }
+  const lines = ['#pragma once', '#include <cstdint>', '', 'namespace Offsets {'];
+  const maxLen = changed.reduce((m, r) => Math.max(m, r.key.length), 10);
+  changed.forEach(r => { const safe = r.key.replace(/::/g, '_').replace(/[^\w]/g, '_'); lines.push('    constexpr uintptr_t ' + safe.padEnd(maxLen + 2, ' ') + ' = ' + r.new + ';'); });
+  lines.push('}');
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Offsets_new.h'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+};
 
-/* ============ KEY GRAB ============ */
 const kgState = { bytes: null, strings: [], data: { url: [], auth: [], key: [], uuid: [], hook: [] }, activeCat: 'url' };
 function extractStrings(bytes, minLen) { const out = []; let cur = []; for (let i = 0; i < bytes.length; i++) { const b = bytes[i]; if (b >= 32 && b < 127) cur.push(b); else { if (cur.length >= minLen) out.push(String.fromCharCode.apply(null, cur)); cur = []; } } if (cur.length >= minLen) out.push(String.fromCharCode.apply(null, cur)); return out; }
 function classifyKg(strings) {
@@ -881,10 +792,10 @@ document.getElementById('kgClose').onclick = () => { document.getElementById('kg
 document.getElementById('kgCopyAll').onclick = () => { const items = kgState.data[kgState.activeCat] || []; if (!items.length) return; navigator.clipboard.writeText(items.join('\n')).then(() => sys('Đã copy ' + items.length + ' dòng')); };
 document.getElementById('kgCopyHook').onclick = () => { if (!kgState.data.hook.length) { alert('Chưa có hook template.'); return; } navigator.clipboard.writeText(kgState.data.hook.join('\n')).then(() => sys('Đã copy hook')); };
 
-/* INIT */
 editor.value = state.files[state.active];
 renderTabs();
-sys('nghiaxz dev DevKit. Đã cập nhật Offset Diff với parser mới.');
+buildPreview();
+sys('nghiaxz dev DevKit. Login đã được gỡ.');
 </script>
 </body>
 </html>
